@@ -4,6 +4,11 @@ import starlight from '@astrojs/starlight';
 
 // https://astro.build/config
 export default defineConfig({
+	vite: {
+		server: {
+		  allowedHosts: ['docs.openagentsbuilder.com']
+		},
+	  },	
 	integrations: [
 		starlight({
 			title: 'My Docs',

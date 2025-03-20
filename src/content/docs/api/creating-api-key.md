@@ -118,7 +118,3 @@ This request should return the following JSON array:
 ```
 
 
-
-## Further reading
-
-- Read [about reference](https://diataxis.fr/reference/) in the Diátaxis framework

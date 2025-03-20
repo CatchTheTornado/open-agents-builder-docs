@@ -62,10 +62,18 @@ By default the User interactions with agents are stored within `Sessions` what s
 
 `Session` is created each time user starts the `Chat` or `Flow`
 
-
-
-
 Each interaction can (and by default should) end up with generating a `Result` - which can be a markdown report or JSON object. 
 
 For example if you created a pre-visit intake form - it's result would be the list of the user answers. If you created a shopping or make-to-order bot - the results would be an order object.
 
+## Batteries included
+
+Our idea was to have OAB ready for building PoC's (Proof of Concept) or Production AI Agents for business - at no time.
+
+This is the reason we decided to include some cool, typical business features inside the panel. The idea is that you can start your Agent ASAP - and when it works - integrate the internal data structres - via API - with your desired systems like your ERP, CRM and PIM.
+
+You may noticed that with the OAB account you're getting not only the AI Agents IDE but also:
+- `Products and Services` - which is a simple PIM where you can define products including support for currencies, variants, AI generated descriptions etc.
+- `Orders` - which is a pretty usefull Order Management System - AI can operate upon,
+- `Calendar` - which is basic Scheduler and Calendar service (GMail and Outlook integrations comming soon) - Agents can check the available time slots or book events,
+- `Attachments` - where you can upload any files in: PDF, Word, Excel, Powerpoint, text, json, ZIP (including all above mentioned formats) files - and have them automatically processed to `markdown` and accesible to the AI Agents.

@@ -8,11 +8,10 @@ hero:
     file: ../../assets/OAB-Logo-Small.svg
   actions:
     - text: Getting started
-      link: /guides/getting-started
+      link: /guides/1-getting-started
       icon: right-arrow
-    - text: Read the Starlight docs
-      link: https://starlight.astro.build
-      icon: external
+    - text: Read the basic concepts and architecture
+      link: /guides/2-concepts
       variant: minimal
 ---
 
@@ -21,16 +20,14 @@ import { Card, CardGrid } from '@astrojs/starlight/components';
 ## Next steps
 
 <CardGrid stagger>
-	<Card title="Update content" icon="pencil">
-		Edit `src/content/docs/index.mdx` to see this page change.
+	<Card title="Create demo instance" icon="setting">
+	Go to <a href="https://openagentsbuilder.com">`openagentsbuilder.com`</a> and create your free instance and start building AI agents right away.
 	</Card>
-	<Card title="Add new content" icon="add-document">
-		Add Markdown or MDX files to `src/content/docs` to create new pages.
+	<Card title="Deploy locally and start contributing" icon="add-document">
+		OAB is MIT Licensed, deploy it locally to start building your custom integrations and AI tools.
+		<a href="">Go to Getting Started guide</a>
 	</Card>
-	<Card title="Configure your site" icon="setting">
-		Edit your `sidebar` and other config in `astro.config.mjs`.
-	</Card>
-	<Card title="Read the docs" icon="open-book">
-		Learn more in [the Starlight Docs](https://starlight.astro.build/).
+	<Card title="Read the API docs" icon="open-book">
+		Learn more in [the API docs](/api/creating-api-key).
 	</Card>
 </CardGrid>

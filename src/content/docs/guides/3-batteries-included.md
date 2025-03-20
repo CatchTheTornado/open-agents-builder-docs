@@ -43,3 +43,5 @@ More than business features - OAB includes some Enterprise features as well, inc
 - **Audit logs** - check who and when had access to your data or modify it
 
 <Image src="../../../assets/audit.png" />
+
+- **Export/import** - features for all the entities like `Products`, `Orders`, `Agents`, `Results`, `Attachments` etc. You own your own data and can export it any time with all the uploaded files etc.

@@ -91,5 +91,10 @@ yarn dev
 
 That's it! Now you can get open your browser and navigate to: https://localhost:3000
 
+## Note on the tech-stack
 
+As you might noticed OAB requires almost no external dependecing. We're using the `SQLite` database - single instance per data-owner (account) which is capable of pretty [enormous data storage](https://www.sqlite.org/whentouse.html) - limited to 281TB of data, probably working great with few TB of data at minimum. 
 
+It gives us no dependencies plus safety (the SQLite files are individualy encrypted, separated and thus safer for multi-tenant configurations).
+
+There should be no major effort of work required for porting OAB to - for example - Postgres - as we're doing all the data operations thru [`Drizzle`](https://orm.drizzle.team/) and using the `Repository` design pattern.

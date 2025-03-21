@@ -24,6 +24,10 @@ export default defineConfig({
 					label: 'API Docs',
 					autogenerate: { directory: 'api' },
 				},
+				{
+					label: 'Extensions',
+					autogenerate: { directory: 'extensibility' },
+				},				
 			],
 		}),
 	],

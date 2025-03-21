@@ -11,9 +11,13 @@ After having this step done please use the following API endpoint.
 
 **Note**: Please make sure you've got the [API key created](../api/1-creating-api-key.md) before executing requests.
 
-### `POST /api/agent/${agentId}/exec`
+### Endpoint `/api/agent/${agentId}/exec`
 
-Body request parameters:
+**Method:** `POST`
+
+**Summary:** This endpoint is used to send a new message in the conversation. It requires authentication and authorization headers.
+
+**Request Body:**
 
 ```json
 {
@@ -203,8 +207,12 @@ export class FlowExecApiClient
     abortController = new AbortController();
 
     const requestBody = JSON.stringify({ flow: flowId, input, execMode, outputMode: "stream", uiState });
-    if (!headers) headers = {};
-    this.setAuthHeader('', headers);
+    if (!headers) headers = {
+        'authorization': `Bearer ${process.env.OPEN_AGENT_BUILDER_API_KEY}`
+        'database-id-hash': '35f5c5b139a6b569d4649b788c1851831eb44d8e32b716b8411ec6431af8121d',
+        
+    };
+    
 
     const response = await fetch(`https://openagentsbuilder.com/api/agent/${agentId}/exec/`, {
       method: "POST",

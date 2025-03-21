@@ -49,7 +49,7 @@ When your flow has some input variables defined you may pass them via request bo
 ```
 **Note**: Please note that if the input variable is set to `file` - it should be read, serialized as `base64` and passed along the mime type.
 
-#### The stream / chunked output
+### The stream / chunked output
 
 When the `outputMode` is set to `stream` (default) your connection to the exec endpoint will be held open and you'll get a constant stream of the data chunks in the following format. 
 
@@ -138,8 +138,51 @@ Each chunk is separated by a new line (`\n` ) so it can be easily parsed from th
 ```
 
 
+### Available Flow output chunks
 
-#### Example TypeScript code calling and parsing the stream mode output
+```typescript
+export enum FlowChunkType {
+  FlowStart = "flowStart",
+  FlowStepStart = "flowStepStart",
+  FlowFinish = "flowFinish",
+  Generation = "generation",
+  GenerationEnd = "generationEnd",
+  ToolCalls = "toolCalls",
+  TextStream = "textStream",
+  FinalResult = "finalResult",
+  Error = "error",
+  Message = "message",
+  UIComponent = "uiComponent", // np. customowy komponent React
+}
+
+export interface FlowChunkEvent {
+  type: FlowChunkType;
+  flowNodeId?: string;
+  flowAgentId?: string;
+  duration?: number;
+  name?: string;
+  timestamp?: Date;
+  issues?: any[];
+
+  result?: string | string[];
+  message?: string;
+  input?: any;
+
+  toolResults?: Array<{
+    args?: any;
+    result?: string;
+  }>;
+
+  messages?: Array<{
+    role: string;
+    content: Array<{ type: string; text: string }>;
+    id?: string;
+  }>;
+
+}
+```
+
+### Example TypeScript code calling and parsing the stream mode output
 
 ```typescript
 

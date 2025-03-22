@@ -68,7 +68,7 @@ export type SessionDTO = z.infer<typeof sessionDTOSchema>;
 - **cURL Example**:
   ```bash
   curl -X GET \
-    "https://your-domain.com/api/session?agentId=agent-123" \
+    "https://app.openagentsbuilder.com/api/session?agentId=agent-123" \
     -H "Authorization: Bearer <YOUR_API_KEY>" \
     -H "database-id-hash: <YOUR_DATABASE_ID_HASH>"
   ```
@@ -113,7 +113,7 @@ export type SessionDTO = z.infer<typeof sessionDTOSchema>;
 - **cURL Example**:
   ```bash
   curl -X DELETE \
-    "https://your-domain.com/api/session/session-001" \
+    "https://app.openagentsbuilder.com/api/session/session-001" \
     -H "Authorization: Bearer <YOUR_API_KEY>" \
     -H "database-id-hash: <YOUR_DATABASE_ID_HASH>"
   ```
@@ -175,7 +175,7 @@ export type SessionDTO = z.infer<typeof sessionDTOSchema>;
 - **cURL Example**:
   ```bash
   curl -X POST \
-    "https://your-domain.com/api/exec/session/session-XYZ" \
+    "https://app.openagentsbuilder.com/api/exec/session/session-XYZ" \
     -H "Authorization: Bearer <YOUR_API_KEY>" \
     -H "database-id-hash: <YOUR_DATABASE_ID_HASH>" \
     -H "Content-Type: application/json" \

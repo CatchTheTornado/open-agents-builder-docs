@@ -60,7 +60,7 @@ export type ResultDTO = z.infer<typeof resultDTOSchema>;
 - **Example**:
   ```bash
   curl -X GET \
-    "https://your-domain.com/api/result?sessionId=session-123" \
+    "https://app.openagentsbuilder.com/api/result?sessionId=session-123" \
     -H "Authorization: Bearer <YOUR_API_KEY>" \
     -H "database-id-hash: <YOUR_DATABASE_ID_HASH>"
   ```
@@ -103,7 +103,7 @@ export type ResultDTO = z.infer<typeof resultDTOSchema>;
 - **Example**:
   ```bash
   curl -X DELETE \
-    "https://your-domain.com/api/result/mySession123" \
+    "https://app.openagentsbuilder.com/api/result/mySession123" \
     -H "Authorization: Bearer <YOUR_API_KEY>" \
     -H "database-id-hash: <YOUR_DATABASE_ID_HASH>"
   ```
@@ -146,7 +146,7 @@ export type ResultDTO = z.infer<typeof resultDTOSchema>;
 - **Example**:
   ```bash
   curl -X GET \
-    "https://your-domain.com/api/agent/agent-123/result?limit=10&offset=0&orderBy=userName&query=alice" \
+    "https://app.openagentsbuilder.com/api/agent/agent-123/result?limit=10&offset=0&orderBy=userName&query=alice" \
     -H "Authorization: Bearer <YOUR_API_KEY>" \
     -H "database-id-hash: <YOUR_DATABASE_ID_HASH>"
   ```
@@ -198,7 +198,7 @@ export type ResultDTO = z.infer<typeof resultDTOSchema>;
 - **Example**:
   ```bash
   curl -X GET \
-    "https://your-domain.com/api/agent/agent-123/result/export" \
+    "https://app.openagentsbuilder.com/api/agent/agent-123/result/export" \
     -H "Authorization: Bearer <YOUR_API_KEY>" \
     -H "database-id-hash: <YOUR_DATABASE_ID_HASH>"
   ```
@@ -212,7 +212,7 @@ export type ResultDTO = z.infer<typeof resultDTOSchema>;
   - Save the response to a file, e.g.:  
     ```bash
     curl -X GET \
-      "https://your-domain.com/api/agent/agent-123/result/export" \
+      "https://app.openagentsbuilder.com/api/agent/agent-123/result/export" \
       -H "Authorization: Bearer <YOUR_API_KEY>" \
       -H "database-id-hash: <YOUR_DATABASE_ID_HASH>" \
       -o results-export.zip
@@ -252,7 +252,7 @@ If you see gibberish or random strings in the DB, that’s expected (ciphertext)
 
 ```bash
 curl -X GET \
-  "https://your-domain.com/api/result" \
+  "https://app.openagentsbuilder.com/api/result" \
   -H "Authorization: Bearer <YOUR_API_KEY>" \
   -H "database-id-hash: <YOUR_DATABASE_ID_HASH>"
 ```
@@ -287,7 +287,7 @@ curl -X GET \
 
 ```bash
 curl -X GET \
-  "https://your-domain.com/api/agent/agent-ABC/result?limit=5&offset=0&orderBy=userName&query=al" \
+  "https://app.openagentsbuilder.com/api/agent/agent-ABC/result?limit=5&offset=0&orderBy=userName&query=al" \
   -H "Authorization: Bearer <YOUR_API_KEY>" \
   -H "database-id-hash: <YOUR_DATABASE_ID_HASH>"
 ```
@@ -321,7 +321,7 @@ curl -X GET \
 
 ```bash
 curl -X DELETE \
-  "https://your-domain.com/api/result/session-001" \
+  "https://app.openagentsbuilder.com/api/result/session-001" \
   -H "Authorization: Bearer <YOUR_API_KEY>" \
   -H "database-id-hash: <YOUR_DATABASE_ID_HASH>"
 ```
@@ -339,7 +339,7 @@ Otherwise, 400 with `"Data not found!"`.
 
 ```bash
 curl -X GET \
-  "https://your-domain.com/api/agent/agent-ABC/result/export" \
+  "https://app.openagentsbuilder.com/api/agent/agent-ABC/result/export" \
   -H "Authorization: Bearer <YOUR_API_KEY>" \
   -H "database-id-hash: <YOUR_DATABASE_ID_HASH>" \
   -o my-results.zip

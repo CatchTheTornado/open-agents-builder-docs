@@ -1,0 +1,117 @@
+Error: Error: Command failed: 
+            cd /home/openagentsbuilder-docs/open-agents-builder-docs
+            pwd
+            git pull
+            npm install
+            npm run build
+            pm2 delete OpenAgentsBuilderDocs
+            pm2 start "node ./src/run-server.js" --name OpenAgentsBuilderDocs
+            pm2 reload all
+        
+/bin/sh: line 1: cd: /home/openagentsbuilder-docs/open-agents-builder-docs: No such file or directory
+Entry docs → 404 was not found.
+/bin/sh: line 6: pm2: command not found
+/bin/sh: line 7: pm2: command not found
+/bin/sh: line 8: pm2: command not found
+
+Deployment at 2025-03-22T08:57:26.577Z:
+stdout: /Users/piotrkarwatka/Projects/open-agents-builder-docs
+Already up to date.
+
+up to date, audited 490 packages in 695ms
+
+220 packages are looking for funding
+  run `npm fund` for details
+
+found 0 vulnerabilities
+
+> build
+> astro build
+
+09:57:24 [vite] Re-optimizing dependencies because lockfile has changed
+09:57:25 [content] Syncing content
+09:57:25 [content] Synced content
+09:57:25 [types] Generated 269ms
+09:57:25 [build] output: "server"
+09:57:25 [build] mode: "server"
+09:57:25 [build] directory: /Users/piotrkarwatka/Projects/open-agents-builder-docs/dist/
+09:57:25 [build] adapter: @astrojs/node
+09:57:25 [build] Collecting build info...
+09:57:25 [build] ✓ Completed in 368ms.
+09:57:25 [build] Building server entrypoints...
+09:57:25 [vite] ✓ built in 800ms
+09:57:25 [build] ✓ Completed in 815ms.
+
+ building client (vite) 
+09:57:25 [vite] transforming...
+09:57:25 [vite] ✓ 17 modules transformed.
+09:57:26 [vite] rendering chunks...
+09:57:26 [vite] computing gzip size...
+09:57:26 [vite] dist/client/_astro/ec.8zarh.js                                                              2.42 kB
+09:57:26 [vite] dist/client/_astro/ec.tm3va.css                                                            18.26 kB │ gzip:  3.88 kB
+09:57:26 [vite] dist/client/_astro/MobileTableOfContents.astro_astro_type_script_index_0_lang.C181hMzK.js   0.67 kB │ gzip:  0.40 kB
+09:57:26 [vite] dist/client/_astro/TableOfContents.astro_astro_type_script_index_0_lang.CKWWgpjV.js         1.67 kB │ gzip:  0.86 kB
+09:57:26 [vite] dist/client/_astro/page.7qqag-5g.js                                                         2.17 kB │ gzip:  0.97 kB
+09:57:26 [vite] dist/client/_astro/Search.astro_astro_type_script_index_0_lang.18-vQxR-.js                  2.57 kB │ gzip:  1.33 kB
+09:57:26 [vite] dist/client/_astro/ui-core.DklwHuoF.js                                                     68.07 kB │ gzip: 21.71 kB
+09:57:26 [vite] ✓ built in 125ms
+
+ prerendering static routes 
+09:57:26 ▶ @astrojs/starlight/routes/static/404.astro
+09:57:26   └─ /404.html (+11ms) 
+09:57:26 ▶ @astrojs/starlight/routes/static/index.astro
+09:57:26   ├─ /index.html (+6ms) 
+09:57:26   ├─ /guides/2-concepts/index.html (+3ms) 
+09:57:26   ├─ /guides/3-batteries-included/index.html (+8ms) 
+09:57:26   ├─ /guides/4-creating-first-agent/index.html (+11ms) 
+09:57:26   ├─ /api/0-creating-api-key/index.html (+3ms) 
+09:57:26   ├─ /guides/1-getting-started/index.html (+2ms) 
+09:57:26   ├─ /api/30-using-chat-endpoint/index.html (+3ms) 
+09:57:26   ├─ /api/20-executing-flow/index.html (+3ms) 
+09:57:26   ├─ /extensibility/20-new-tool-integration/index.html (+3ms) 
+09:57:26   ├─ /extensibility/0-new-endpoint-entity/index.html (+3ms) 
+09:57:26   ├─ /extensibility/10-new-entity-admin/index.html (+3ms) 
+09:57:26   └─ /api/10-agent-api/index.html (+2ms) 
+09:57:26 ✓ Completed in 88ms.
+
+ generating optimized images 
+09:57:26   ▶ /_astro/OAB-Logo-Small.B1tL-1rH_Zm3rkx.svg (reused cache entry) (+1ms) (1/1)
+09:57:26 ✓ Completed in 1ms.
+
+09:57:26 [build] Rearranging server assets...
+
+Running Pagefind v1.3.0 (Extended)
+Running from: "/Users/piotrkarwatka/Projects/open-agents-builder-docs/node_modules/@astrojs/starlight"
+Source:       "../../../dist/client"
+Output:       "../../../dist/client/pagefind"
+
+[Walking source directory]
+Found 13 files matching **/*.{html}
+
+[Parsing files]
+Found a data-pagefind-body element on the site.
+↳ Ignoring pages without this tag.
+
+[Reading languages]
+Discovered 1 language: en
+
+[Building search indexes]
+Total: 
+  Indexed 1 language
+  Indexed 12 pages
+  Indexed 2314 words
+  Indexed 0 filters
+  Indexed 0 sorts
+
+Finished in 0.108 seconds
+09:57:26 [WARN] [@astrojs/sitemap] The Sitemap integration requires the `site` astro.config option. Skipping.
+09:57:26 [build] Server built in 1.87s
+09:57:26 [build] Complete!
+
+stderr: /bin/sh: line 1: cd: /home/openagentsbuilder-docs/open-agents-builder-docs: No such file or directory
+Entry docs → 404 was not found.
+/bin/sh: line 6: pm2: command not found
+/bin/sh: line 7: pm2: command not found
+/bin/sh: line 8: pm2: command not found
+
+

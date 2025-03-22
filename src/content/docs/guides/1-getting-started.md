@@ -8,6 +8,17 @@ The easiest way to start building agents with Open Agents Builder is to [create 
 
 <a href="https://openagentsbuilder.com"><Image alt="Create free account on OpenAgentsBuilder.com to start building agents right away" src="../../../assets/register.png" /></a>
 
+## How does it work?
+
+<div>
+    <a href="https://www.loom.com/share/267cb3ac88aa430983983daf2f6b1fdf">
+      <p>Building AI Agents Made Easy 🤖 - Watch Video</p>
+    </a>
+    <a href="https://www.loom.com/share/267cb3ac88aa430983983daf2f6b1fdf">
+      <img style="max-width:300px;" src="https://cdn.loom.com/sessions/thumbnails/267cb3ac88aa430983983daf2f6b1fdf-f96286df0e058072-full-play.gif">
+    </a>
+  </div>
+
 
 ## Local setup
 

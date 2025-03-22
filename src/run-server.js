@@ -75,6 +75,10 @@ app.post('/github-webhook', (req, res) => {
         let header = req.headers['x-hub-signature-256'];
         let event = req.headers['x-github-event'];
 
+        if (event === 'ping') {
+            return res.send('pong');
+        }
+
         if (event !== 'push') {
             return res.status(400).send('Unsupported event');
         }

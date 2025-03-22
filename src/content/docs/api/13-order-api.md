@@ -1,3 +1,8 @@
+---
+title: Order Management API
+description: How to create, delete and filter orders thru API
+---
+
 Below is a **comprehensive REST API documentation** for managing **Orders** in your **e-commerce** (`"commerce"`) schema. It includes **cURL** examples _and_ **TypeScript** examples (using the native `fetch` API) for each endpoint.  
 
 ---

@@ -9,6 +9,10 @@ All examples assume a base URL of **`https://app.openagentsbuilder.com`**.
 
 ---
 
+> **Note**: There is an API client plus example available on: [https://github.com/CatchTheTornado/open-agents-builder-client](https://github.com/CatchTheTornado/open-agents-builder-client) and [https://github.com/CatchTheTornado/open-agents-builder-example](https://github.com/CatchTheTornado/open-agents-builder-example)
+
+---
+
 ## 1. Overview
 
 The **Stats** API helps you **record** usage data (like prompt/completion tokens for LLM usage) and **retrieve** aggregated metrics for:

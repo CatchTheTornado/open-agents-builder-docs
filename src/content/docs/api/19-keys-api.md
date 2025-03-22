@@ -9,6 +9,10 @@ All examples assume the base URL **`https://app.openagentsbuilder.com`**.
 
 ---
 
+> **Note**: There is an API client plus example available on: [https://github.com/CatchTheTornado/open-agents-builder-client](https://github.com/CatchTheTornado/open-agents-builder-client) and [https://github.com/CatchTheTornado/open-agents-builder-example](https://github.com/CatchTheTornado/open-agents-builder-example)
+
+---
+
 ## 1. Overview
 
 **Keys** typically store:

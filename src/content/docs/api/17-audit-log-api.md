@@ -15,6 +15,10 @@ All examples assume a base URL of **`https://app.openagentsbuilder.com`**.
 
 ---
 
+> **Note**: There is an API client plus example available on: [https://github.com/CatchTheTornado/open-agents-builder-client](https://github.com/CatchTheTornado/open-agents-builder-client) and [https://github.com/CatchTheTornado/open-agents-builder-example](https://github.com/CatchTheTornado/open-agents-builder-example)
+
+---
+
 ## 1. Overview
 
 Audit logs capture **changes** or **events** in your system, such as:  

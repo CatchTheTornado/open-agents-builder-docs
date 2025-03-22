@@ -7,6 +7,10 @@ Below is a **REST API documentation** for managing **Result** data in your appli
 
 ---
 
+> **Note**: There is an API client plus example available on: [https://github.com/CatchTheTornado/open-agents-builder-client](https://github.com/CatchTheTornado/open-agents-builder-client) and [https://github.com/CatchTheTornado/open-agents-builder-example](https://github.com/CatchTheTornado/open-agents-builder-example)
+
+---
+
 ## 1. Overview
 
 The **Result** entity (based on the `resultDTOSchema`) stores output data associated with agents and sessions. The relevant endpoints let you:

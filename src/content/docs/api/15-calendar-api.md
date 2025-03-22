@@ -8,6 +8,10 @@ Below is a **REST API documentation** for managing **Calendar Events** in your a
 
 ---
 
+> **Note**: There is an API client plus example available on: [https://github.com/CatchTheTornado/open-agents-builder-client](https://github.com/CatchTheTornado/open-agents-builder-client) and [https://github.com/CatchTheTornado/open-agents-builder-example](https://github.com/CatchTheTornado/open-agents-builder-example)
+
+---
+
 ## 1. Overview
 
 The **Calendar** endpoints allow you to:

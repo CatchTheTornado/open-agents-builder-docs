@@ -118,6 +118,14 @@ app.post('/github-webhook', (req, res) => {
                 logStream.write(logMessage);
                 logStream.end();
                 res.send('Deployment successful');
+
+                fs.writeFile('/home/openagentsbuilder-docs/deployment-watch.txt', new Date().toISOString(), (err) => {
+                    if (err) {
+                        console.error(`Error updating deployment-watch.txt: ${err}`);
+                    } else {
+                        console.log('deployment-watch.txt updated successfully');
+                    }
+                });
             });
 
         });

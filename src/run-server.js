@@ -1,6 +1,6 @@
 import express from 'express';
 import { handler as ssrHandler } from '../dist/server/entry.mjs';
-const { exec } = require('child_process');
+import { exec } from 'child_process';
 
 const app = express();
 // Change this based on your astro.config.mjs, `base` option.

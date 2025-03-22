@@ -1,54 +1,90 @@
-# Starlight Starter Kit: Basics
+# Open Agents Builder Documentation
 
-[![Built with Starlight](https://astro.badg.es/v2/built-with-starlight/tiny.svg)](https://starlight.astro.build)
+Welcome to the Open Agents Builder documentation repository. This repository contains comprehensive guides and API documentation to help you understand and utilize the Open Agents Builder platform effectively.
 
-```
-npm create astro@latest -- --template starlight
-```
+## Table of Contents
 
-[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/withastro/starlight/tree/main/examples/basics)
-[![Open with CodeSandbox](https://assets.codesandbox.io/github/button-edit-lime.svg)](https://codesandbox.io/p/sandbox/github/withastro/starlight/tree/main/examples/basics)
-[![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/withastro/starlight&create_from_path=examples/basics)
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fwithastro%2Fstarlight%2Ftree%2Fmain%2Fexamples%2Fbasics&project-name=my-starlight-docs&repository-name=my-starlight-docs)
+- [Introduction](#introduction)
+- [Guides](#guides)
+    - [Creating Your First Agent](#creating-your-first-agent)
+    - [Custom Entities and API Endpoints](#custom-entities-and-api-endpoints)
+    - [New Tool Integration](#new-tool-integration)
+- [API Documentation](#api-documentation)
+    - [Agent Management API](#agent-management-api)
+    - [Attachments Management API](#attachments-management-api)
+    - [Order Management API](#order-management-api)
+    - [Product Management API](#product-management-api)
+    - [Audit Log API](#audit-log-api)
+    - [Stats API](#stats-api)
+    - [Executing Flow via API](#executing-flow-via-api)
+- [Extensibility](#extensibility)
+    - [Adding New Entity and API Endpoint](#adding-new-entity-and-api-endpoint)
+    - [Adding New Tool Integration](#adding-new-tool-integration)
+- [Contributing](#contributing)
+- [License](#license)
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+## Introduction
 
-## 🚀 Project Structure
+Open Agents Builder is a platform designed to help you create, manage, and deploy intelligent agents. This documentation provides all the necessary information to get started and make the most out of the platform.
 
-Inside of your Astro + Starlight project, you'll see the following folders and files:
+## Guides
 
-```
-.
-├── public/
-├── src/
-│   ├── assets/
-│   ├── content/
-│   │   ├── docs/
-│   └── content.config.ts
-├── astro.config.mjs
-├── package.json
-└── tsconfig.json
-```
+### Creating Your First Agent
 
-Starlight looks for `.md` or `.mdx` files in the `src/content/docs/` directory. Each file is exposed as a route based on its file name.
+Learn how to create your first agent using the Open Agents Builder platform. This guide will walk you through the process step-by-step. [Read more](guides/creating-your-first-agent.md)
 
-Images can be added to `src/assets/` and embedded in Markdown with a relative link.
+### Custom Entities and API Endpoints
 
-Static assets, like favicons, can be placed in the `public/` directory.
+This guide explains how to add new entities and API endpoints to manage them within your Next.js + Drizzle + TypeScript setup. [Read more](guides/custom-entities-and-api-endpoints.md)
 
-## 🧞 Commands
+### New Tool Integration
 
-All commands are run from the root of the project, from a terminal:
+A step-by-step guide on how to extend Open Agents Builder by adding new custom AI tools. [Read more](guides/new-tool-integration.md)
 
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
+## API Documentation
 
-## 👀 Want to learn more?
+### Agent Management API
 
-Check out [Starlight’s docs](https://starlight.astro.build/), read [the Astro documentation](https://docs.astro.build), or jump into the [Astro Discord server](https://astro.build/chat).
+Comprehensive REST API documentation for managing agents, including creating, updating, and deleting agents. [Read more](api/agent-management-api.md)
+
+### Attachments Management API
+
+Detailed documentation on how to manage attachments, including creating, updating, and retrieving binary files. [Read more](api/attachments-management-api.md)
+
+### Order Management API
+
+REST API documentation for managing orders in your e-commerce schema, including creating, updating, and deleting orders. [Read more](api/order-management-api.md)
+
+### Product Management API
+
+Documentation for managing products through the API, including creating, updating, and deleting products. [Read more](api/product-management-api.md)
+
+### Audit Log API
+
+API documentation for managing audit logs, including creating and retrieving logs. [Read more](api/audit-log-api.md)
+
+### Stats API
+
+Documentation for tracking usage metrics such as prompt/completion tokens and aggregated monthly stats. [Read more](api/stats-api.md)
+
+### Executing Flow via API
+
+A guide on how to execute a Flow-type agent via the API, including details of the FlowChunkType and FlowChunkEvent interfaces. [Read more](api/executing-flow-via-api.md)
+
+## Extensibility
+
+### Adding New Entity and API Endpoint
+
+Learn how to add new entities and API endpoints to manage them within your application. [Read more](extensibility/adding-new-entity-and-api-endpoint.md)
+
+### Adding New Tool Integration
+
+A guide on how to add new custom AI tools to let the AI integrate with third-party systems. [Read more](extensibility/adding-new-tool-integration.md)
+
+## Contributing
+
+We welcome contributions to improve the documentation and the platform. Please refer to the contributing guidelines for more information. [Read more](CONTRIBUTING.md)
+
+## License
+
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for more details.

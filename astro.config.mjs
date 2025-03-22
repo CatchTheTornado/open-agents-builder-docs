@@ -8,6 +8,9 @@ export default defineConfig({
 		server: {
 		  allowedHosts: ['docs.openagentsbuilder.com']
 		},
+		preview: {
+			allowedHosts: ['docs.openagentsbuilder.com']
+		}
 	  },	
 	integrations: [
 		starlight({

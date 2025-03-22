@@ -100,9 +100,9 @@ app.post('/github-webhook', (req, res) => {
             git pull
             npm install
             npm run build
-            pm2 delete OpenAgentsBuilderDocs
-            pm2 start "node ./src/run-server.js" --name OpenAgentsBuilderDocs
-            pm2 reload all
+            /usr/local/bin/pm2 delete OpenAgentsBuilderDocs
+            /usr/local/bin/pm2 start "node ./src/run-server.js" --name OpenAgentsBuilderDocs
+            /usr/local/bin/pm2 reload all
         `;
 
             exec(script, (error, stdout, stderr) => {

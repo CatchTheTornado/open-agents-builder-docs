@@ -1,37 +1,39 @@
 ---
 title: Result Management API
-description: How to create, delete and filter results thru API
+description: How to create, delete, and filter results through the API
 ---
 
-Below is a **REST API documentation** for managing **Result** data in your application. The **Result** entity references user-generated output from a Session or Agent and may contain encrypted fields (e.g., `userName`, `userEmail`, `content`).  
-
----
-
-> **Note**: There is an API client plus example available on: [https://github.com/CatchTheTornado/open-agents-builder-client](https://github.com/CatchTheTornado/open-agents-builder-client) and [https://github.com/CatchTheTornado/open-agents-builder-example](https://github.com/CatchTheTornado/open-agents-builder-example)
+Below is the **REST API documentation** for managing **Result** data in your application. The **Result** entity stores user-generated outputs from a session or agent, and may contain encrypted fields (e.g., `userName`, `userEmail`, `content`).  
 
 ---
 
-## 1. Overview
+> **Note**: A TypeScript API client and example usage are available here:  
+> - [open-agents-builder-client](https://github.com/CatchTheTornado/open-agents-builder-client)  
+> - [open-agents-builder-example](https://github.com/CatchTheTornado/open-agents-builder-example)
 
-The **Result** entity (based on the `resultDTOSchema`) stores output data associated with agents and sessions. The relevant endpoints let you:
+---
 
-1. **List all results** (globally or per agent).  
+## **1. Overview**
+
+The **Result** entity (based on the `resultDTOSchema`) stores session output data. Relevant endpoints allow you to:
+
+1. **List** all results (globally or per agent).  
 2. **Search/paginate** results.  
 3. **Export** results to a ZIP archive.  
 4. **Delete** specific results.  
 
-Some endpoints also perform **encryption/decryption** at the database level for sensitive fields (`userName`, `userEmail`, `content`).
+Some fields (`userName`, `userEmail`, `content`) may be **encrypted** at the database level.
 
 ---
 
-## 2. Data Schema & Fields
+## **2. Data Schema & Fields**
 
-From the `ResultDTO` definition (`src/data/dto.ts`):
+From the `ResultDTO` definition:
 
 ```ts
 export const resultDTOSchema = z.object({
   agentId: z.string().min(1),
-  sessionId: z.string().min(1),         // The session to which the result belongs
+  sessionId: z.string().min(1),
   userName: z.string().optional().nullable(),
   userEmail: z.string().optional().nullable(),
   content: z.string().optional().nullable(),
@@ -43,34 +45,30 @@ export const resultDTOSchema = z.object({
 export type ResultDTO = z.infer<typeof resultDTOSchema>;
 ```
 
-- **`agentId`**: String reference to an Agent’s ID.  
-- **`sessionId`**: String reference to the Session.  
-- **`userName`** & **`userEmail`**: Potentially sensitive user info (often encrypted).  
-- **`content`**: The actual text or output from the session.  
-- **`format`**: e.g., `markdown`, `json`, or any textual descriptor.  
-- **`createdAt`** & **`updatedAt`**: Timestamps (default to current time).  
-- **`finalizedAt`**: Optional. If set, indicates no further modifications.
+- **`agentId`**: String reference to the agent’s ID.  
+- **`sessionId`**: String reference to the session.  
+- **`userName`** & **`userEmail`**: User-provided info, often encrypted in the database.  
+- **`content`**: The session’s output or result text.  
+- **`format`**: A descriptor such as `markdown`, `json`, etc.  
+- **`createdAt`** & **`updatedAt`**: Default to the current timestamp.  
+- **`finalizedAt`**: Optional. If set, indicates no further modifications are expected.
 
 ---
 
-## 3. Endpoints
+## **3. Endpoints**
 
-### 3.1 **`GET /api/result`**
+### **3.1 `GET /api/result`**
 
 - **Description**:  
-  Returns **all** results across all agents/sessions, optionally filtered by query parameters (e.g., `sessionId`, `agentId`, etc.).  
-  Internally calls `genericGET<ResultDTO>` with a `ServerResultRepository`.
-
-- **Example**:
+  Returns **all** results across all agents and sessions, optionally filtered by query parameters (e.g., `sessionId`, `agentId`, etc.).
+- **Example cURL**:
   ```bash
   curl -X GET \
     "https://app.openagentsbuilder.com/api/result?sessionId=session-123" \
     -H "Authorization: Bearer <YOUR_API_KEY>" \
     -H "database-id-hash: <YOUR_DATABASE_ID_HASH>"
   ```
-
-- **Success Response** (HTTP 200):  
-  Returns an array of `ResultDTO`:
+- **Successful Response** (HTTP `200`):
   ```json
   [
     {
@@ -96,37 +94,49 @@ export type ResultDTO = z.infer<typeof resultDTOSchema>;
   }
   ```
 
+#### Using the TypeScript Client
+```ts
+import { OpenAgentsBuilderClient } from "open-agents-builder-client";
+
+const client = new OpenAgentsBuilderClient({
+  databaseIdHash: "YOUR_DATABASE_ID_HASH",
+  apiKey: "YOUR_API_KEY"
+});
+
+async function listAllResults() {
+  const results = await client.result.listResults({ sessionId: "session-123" });
+  console.log("Results:", results);
+}
+```
+
 ---
 
-### 3.2 **`DELETE /api/result/[id]`**
+### **3.2 `DELETE /api/result/[id]`**
 
 - **Description**:  
-  Deletes a specific **Result** based on a **`sessionId`** matching `[id]`.  
-  The code references `genericDELETE()` with `{ sessionId: recordLocator }`, so `[id]` is treated as the `sessionId`.  
-
-- **Example**:
+  Deletes a specific **Result** by `sessionId`. The `[id]` in the URL is interpreted as `sessionId`.
+- **Example cURL**:
   ```bash
   curl -X DELETE \
     "https://app.openagentsbuilder.com/api/result/mySession123" \
     -H "Authorization: Bearer <YOUR_API_KEY>" \
     -H "database-id-hash: <YOUR_DATABASE_ID_HASH>"
   ```
-
-- **Success Response** (HTTP 200) if deleted:
+- **Successful Response** (HTTP `200`):
   ```json
   {
     "message": "Data deleted successfully!",
     "status": 200
   }
   ```
-
-- **Failure** (HTTP 400, if no match):
+- **Failure** (HTTP `400`):
   ```json
   {
     "message": "Data not found!",
     "status": 400
   }
   ```
+
   Or, if `[id]` is missing or invalid:
   ```json
   {
@@ -135,27 +145,34 @@ export type ResultDTO = z.infer<typeof resultDTOSchema>;
   }
   ```
 
+
+#### Using the TypeScript Client
+```ts
+async function deleteResult(sessionId: string) {
+  await client.result.deleteResult(sessionId);
+  console.log(`Result for session ${sessionId} was deleted.`);
+}
+```
+
 ---
 
-### 3.3 **`GET /api/agent/[id]/result`**
+### **3.3 `GET /api/agent/[id]/result`**
 
 - **Description**:  
-  Returns **paginated** results for a specific agent identified by `[id]`.  
+  Lists **paginated** results for the agent identified by `[id]`.  
   Accepts query params:
-  - **`limit`** (integer)  
-  - **`offset`** (integer)  
-  - **`orderBy`** (defaults to `"createdAt"`; can be `"userName"`, `"userEmail"`, `"createdAt"`, or `"updatedAt"`).  
-  - **`query`** (string; partial search across `userEmail`, `userName`, or `sessionId`).  
-
-- **Example**:
+  - **`limit`** (e.g., `10`)  
+  - **`offset`** (e.g., `0`)  
+  - **`orderBy`** (`"userName"`, `"userEmail"`, `"createdAt"`, `"updatedAt"`, default: `"createdAt"`)  
+  - **`query`** (partial string search in `userEmail`, `userName`, or `sessionId`)
+- **Example cURL**:
   ```bash
   curl -X GET \
     "https://app.openagentsbuilder.com/api/agent/agent-123/result?limit=10&offset=0&orderBy=userName&query=alice" \
     -H "Authorization: Bearer <YOUR_API_KEY>" \
     -H "database-id-hash: <YOUR_DATABASE_ID_HASH>"
   ```
-  
-- **Success Response** (HTTP 200) in a **paginated** format:
+- **Successful Response** (HTTP `200`, paginated):
   ```json
   {
     "rows": [
@@ -164,7 +181,7 @@ export type ResultDTO = z.infer<typeof resultDTOSchema>;
         "sessionId": "session-001",
         "userName": "Alice",
         "userEmail": "[email protected]",
-        "content": "Result content for agent 123",
+        "content": "Result content",
         "format": "markdown",
         "createdAt": "2025-03-21T10:00:00.000Z",
         "updatedAt": "2025-03-21T11:00:00.000Z",
@@ -179,13 +196,30 @@ export type ResultDTO = z.infer<typeof resultDTOSchema>;
     "query": "alice"
   }
   ```
+
   - **`rows`** is an array of `ResultDTO` objects.  
   - **`total`** is the total matches for the query.  
   - **`limit`**, **`offset`**, **`orderBy`**, **`query`** are echoed back for reference.
 
+
+#### Using the TypeScript Client
+```ts
+async function listResultsForAgent(agentId: string) {
+  // There's currently no specialized method for this route in the client,
+  // but you can call it by passing custom query params to `listResults`.
+  // If needed, you can add a new method to the ResultApi class for more direct usage.
+  const results = await client.result.listResults({
+    agentId, limit: 10, offset: 0, orderBy: "userName", query: "alice"
+  });
+  console.log(`Paginated results for agent ${agentId}:`, results);
+}
+```
+
+> You may need to extend the client or call `fetch` directly if you want the exact paginated format (`rows`, `total`, etc.) returned by `GET /api/agent/[id]/result`. By default, `listResults` calls `/api/result`, so partial adaptation might be required.
+
 ---
 
-### 3.4 **`GET /api/agent/[id]/result/export`**
+### **3.4 `GET /api/agent/[id]/result/export`**
 
 - **Description**:  
   Exports **all** results (currently from *all* agents, though the code snippet also references `[id]`; you might adapt it) into a **.zip** archive with multiple files.  
@@ -198,180 +232,143 @@ export type ResultDTO = z.infer<typeof resultDTOSchema>;
   3. If a result has `format: "json"`, we produce `.json` and `.html` (converted by `json2html`).  
   4. Filenames are generated from a sanitized combination of `createdAt` + `sessionId`.  
   5. The route triggers an **audit log** with `eventName: 'exportResults'`.  
-
-- **Example**:
+- **Example cURL**:
   ```bash
   curl -X GET \
     "https://app.openagentsbuilder.com/api/agent/agent-123/result/export" \
     -H "Authorization: Bearer <YOUR_API_KEY>" \
-    -H "database-id-hash: <YOUR_DATABASE_ID_HASH>"
+    -H "database-id-hash: <YOUR_DATABASE_ID_HASH>" \
+    -o result-export.zip
   ```
-
 - **Success Response** (HTTP 200):  
   - Returns a `.zip` file.  
   - The `Content-Type` is `application/zip`.  
   - The response body is binary data.  
 
-- **Usage**:
-  - Save the response to a file, e.g.:  
-    ```bash
-    curl -X GET \
-      "https://app.openagentsbuilder.com/api/agent/agent-123/result/export" \
-      -H "Authorization: Bearer <YOUR_API_KEY>" \
-      -H "database-id-hash: <YOUR_DATABASE_ID_HASH>" \
-      -o results-export.zip
-    ```
+#### Using the TypeScript Client
+Currently, the `result` sub-client doesn’t implement a dedicated `export` method for handling ZIP responses. You can:
+1. Extend the **ResultApi** to include a `exportResults` method.  
+2. Use a direct `fetch` approach for the ZIP download.
 
----
+**Example** (extending the client):
 
-## 4. Encryption Details
-
-In `ServerResultRepository`, certain fields (`userName`, `userEmail`, `content`) are **encrypted** with a storage key if present:
 ```ts
-async encryptItem(item: ResultDTO): Promise<ResultDTO> {
-  if (this.encUtils) {
-    if (item.userName) item.userName = await this.encUtils.encrypt(item.userName);
-    if (item.userEmail) item.userEmail = await this.encUtils.encrypt(item.userEmail);
-    if (item.content) item.content = await this.encUtils.encrypt(item.content);
+import { BaseClient } from "open-agents-builder-client";
+
+class ExtendedResultApi extends BaseClient {
+  public async exportResults(agentId: string): Promise<Blob> {
+    const resp = await fetch(`${this.baseUrl}/api/agent/${agentId}/result/export`, {
+      method: "GET",
+      headers: {
+        "Authorization": `Bearer ${this.apiKey}`,
+        "database-id-hash": this.databaseIdHash
+      }
+    });
+    if (!resp.ok) {
+      throw new Error(`Error exporting results: ${resp.statusText}`);
+    }
+    return resp.blob();
   }
-  return item;
+}
+
+// Usage in your code:
+const extendedResultApi = new ExtendedResultApi({
+  databaseIdHash: "YOUR_DATABASE_ID_HASH",
+  apiKey: "YOUR_API_KEY"
+});
+
+async function exportResultsForAgent(agentId: string) {
+  const zipBlob = await extendedResultApi.exportResults(agentId);
+  // Now handle the Blob (e.g., save to local filesystem in an Electron app, or upload elsewhere, etc.)
 }
 ```
 
-Similarly, data is **decrypted** when reading it from the DB. This means:
 
-- **Clients** need to send plaintext for `userName`, `userEmail`, or `content`.  
-- **Storage** is encrypted automatically.  
-- **Response** from the endpoints is decrypted back to plaintext.  
 
-If you see gibberish or random strings in the DB, that’s expected (ciphertext). The REST endpoints return human-readable plaintext (assuming your request is properly authorized and the server has the correct key).
+
 
 ---
 
-## 5. Common Workflows
+## **4. Encryption Details**
 
-### 5.1 Listing All Results
+- Fields like `userName`, `userEmail`, and `content` are encrypted at rest using your storage key if provided in the server context.
+- You send **plaintext** to the server, which encrypts it before storing.  
+- When you fetch a result, the server decrypts it and returns plaintext.
+- This ensures data at rest is securely encrypted.
 
-**`GET /api/result`** without parameters:
+---
 
+## **5. Common Workflows**
+
+1. **List all results**: `GET /api/result`  
+2. **Filter by session or agent**: `GET /api/result?sessionId=...&agentId=...`  
+3. **Paginated listing** for a specific agent: `GET /api/agent/[id]/result?limit=...&offset=...`  
+4. **Export** all results for an agent: `GET /api/agent/[id]/result/export`  
+5. **Delete** a result by session ID: `DELETE /api/result/[sessionId]`  
+
+---
+
+## **6. Example Calls**
+
+### 6.1 Listing All Results
 ```bash
 curl -X GET \
   "https://app.openagentsbuilder.com/api/result" \
   -H "Authorization: Bearer <YOUR_API_KEY>" \
   -H "database-id-hash: <YOUR_DATABASE_ID_HASH>"
 ```
+Returns `[ ResultDTO, ... ]`.
 
-**Response**: `[ ResultDTO, ... ]`
-
-### 5.2 Listing Results for One Agent, With Pagination
-
-**`GET /api/agent/[id]/result?limit=10&offset=0&orderBy=updatedAt&query=john`**:
-
-- Returns up to 10 results matching `john` in either `userEmail`, `userName`, or `sessionId`.
-- Sorted by `updatedAt` descending.
-
-### 5.3 Exporting Results
-
-**`GET /api/agent/[id]/result/export`**:
-
-- Downloads a **`result-export.zip`** file containing `.md`, `.html`, `.json` versions of each result.
-
-### 5.4 Deleting a Single Result
-
-**`DELETE /api/result/[id]`**:
-
-- `[id]` is interpreted as the `sessionId`.
-- The record is removed from the `results` table if found.
-
----
-
-## 6. Example Requests and Responses
-
-### 6.1 cURL Example: Retrieve Paginated Results for an Agent
-
-```bash
-curl -X GET \
-  "https://app.openagentsbuilder.com/api/agent/agent-ABC/result?limit=5&offset=0&orderBy=userName&query=al" \
-  -H "Authorization: Bearer <YOUR_API_KEY>" \
-  -H "database-id-hash: <YOUR_DATABASE_ID_HASH>"
+#### Using the TypeScript Client
+```ts
+const allResults = await client.result.listResults();
+console.log("All results:", allResults);
 ```
 
-**Possible Response** (200 OK):
-```json
-{
-  "rows": [
-    {
-      "agentId": "agent-ABC",
-      "sessionId": "session-001",
-      "userName": "Alice",
-      "userEmail": "[email protected]",
-      "content": "...",
-      "format": "markdown",
-      "createdAt": "2025-03-21T10:00:00.000Z",
-      "updatedAt": "2025-03-21T11:00:00.000Z",
-      "finalizedAt": null
-    },
-    ...
-  ],
-  "total": 13,
-  "limit": 5,
-  "offset": 0,
-  "orderBy": "userName",
-  "query": "al"
-}
-```
-
-### 6.2 cURL Example: Delete a Result
-
+### 6.2 Deleting a Single Result
 ```bash
 curl -X DELETE \
   "https://app.openagentsbuilder.com/api/result/session-001" \
   -H "Authorization: Bearer <YOUR_API_KEY>" \
   -H "database-id-hash: <YOUR_DATABASE_ID_HASH>"
 ```
+Returns `{ "message": "Data deleted successfully!", "status": 200 }` if found.
 
-**Response** (200 OK, if found and deleted):
-```json
-{
-  "message": "Data deleted successfully!",
-  "status": 200
-}
+#### Using the TypeScript Client
+```ts
+await client.result.deleteResult("session-001");
+console.log("Result with session-001 deleted");
 ```
-Otherwise, 400 with `"Data not found!"`.
 
-### 6.3 cURL Example: Export Results
-
+### 6.3 Exporting Results (ZIP)
 ```bash
 curl -X GET \
   "https://app.openagentsbuilder.com/api/agent/agent-ABC/result/export" \
   -H "Authorization: Bearer <YOUR_API_KEY>" \
   -H "database-id-hash: <YOUR_DATABASE_ID_HASH>" \
-  -o my-results.zip
+  -o agentABC-results.zip
 ```
-
-Downloadable `.zip` (use `-o` to save the file).
-
----
-
-## 7. Error Handling
-
-- **400 Bad Request**: Missing or invalid parameters (e.g., invalid `[id]`, or the data you want to delete doesn’t exist).  
-- **499** or **500**: Internal issues (server errors, encryption failures, etc.).  
-- **401** or **403**: If the request is unauthorized (invalid token or missing `database-id-hash`).  
-
-Each error typically includes a JSON body with a `message` field describing the issue.
+Downloadable `.zip`.
 
 ---
 
-## 8. Summary
+## **7. Error Handling**
 
-**Result** records are stored in `results` and typically reference an `agentId` and `sessionId`. You can:
+- **400 Bad Request**: Missing or invalid parameters (e.g., invalid `[id]`).  
+- **401/403 Unauthorized/Forbidden**: Invalid or missing credentials/headers.  
+- **499/500 Internal Error**: Server issues (encryption/decryption failures, DB errors, etc.).
 
-1. **List all** (`GET /api/result`) or **list for a specific agent** (`GET /api/agent/[id]/result`).  
-2. **Search** with `limit`, `offset`, `query`, `orderBy`.  
-3. **Export** to a `.zip` with `GET /api/agent/[id]/result/export`.  
-4. **Delete** a result by `sessionId` with `DELETE /api/result/[id]`.  
+Each error typically includes a JSON body with a `message` and `status`.
 
-Sensitive fields (`userName`, `userEmail`, `content`) may be encrypted in the database. The repository automatically handles encryption/decryption. You see plaintext in the JSON responses if you have a valid key.  
+---
 
-This covers all relevant endpoints and usage patterns for the **Result** entity. If you have additional questions or need advanced filtering, refer to the code in **`ServerResultRepository`** or the generic API helpers (`genericGET`, `genericDELETE`, etc.).
+## **8. Summary**
+
+**Result** records store user-submitted data (`content`) from sessions (`sessionId`) and reference a specific agent (`agentId`). You can:
+
+- **List** results (`GET /api/result` or `GET /api/agent/[id]/result`).  
+- **Filter** by query parameters (`sessionId`, `userEmail`, etc.).  
+- **Export** them to a `.zip` (`GET /api/agent/[id]/result/export`).  
+- **Delete** a result by session ID (`DELETE /api/result/[sessionId]`).  
+
+Sensitive fields (`userName`, `userEmail`, `content`) are encrypted at rest. If you have additional requirements—like custom search parameters or file uploads—you can extend the existing endpoints or the official **open-agents-builder-client** TypeScript library accordingly.

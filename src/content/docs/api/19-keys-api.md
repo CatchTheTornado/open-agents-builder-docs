@@ -3,7 +3,7 @@ title: Keys API
 description: How to manage the Sharing keys
 ---
 
-Below is a **comprehensive REST API documentation** for the **Keys** resource, now **including** an important note referencing the **key creation** logic from GitHub.  
+Below is a **comprehensive REST API documentation** for the **Keys** resource, now **including** an important note referencing the **key creation** logic from GitHub.
 
 All examples assume the base URL **`https://app.openagentsbuilder.com`**.
 
@@ -126,6 +126,24 @@ listKeys("35f5c5b139a6b569d4649b7...")
 ]
 ```
 
+#### Using the TypeScript API Client
+
+```ts
+import { OpenAgentsBuilderClient } from "open-agents-builder-client";
+
+const client = new OpenAgentsBuilderClient({
+  apiKey: "<YOUR_API_KEY>",
+  databaseIdHash: "<YOUR_DATABASE_ID_HASH>"
+});
+
+async function listKeysClientExample() {
+  const keys = await client.keys.listKeys({ databaseIdHash: "35f5c5b139a6b569d4649b7..." });
+  console.log("Keys (via client):", keys);
+}
+
+listKeysClientExample();
+```
+
 ---
 
 ### 3.2 PUT `/api/keys`
@@ -224,6 +242,32 @@ upsertKey({
 }
 ```
 
+#### Using the TypeScript API Client
+
+```ts
+import { OpenAgentsBuilderClient } from "open-agents-builder-client";
+
+const client = new OpenAgentsBuilderClient({
+  apiKey: "<YOUR_API_KEY>",
+  databaseIdHash: "<YOUR_DATABASE_ID_HASH>"
+});
+
+async function upsertKeyClientExample() {
+  const keyData = {
+    displayName: "My Key #1",
+    keyLocatorHash: "1122334455667788aaabbbcccdddeeefff0011223344556677aaabbbcccdddee",
+    keyHash: "abc123def456...",
+    keyHashParams: "some-params",
+    databaseIdHash: "35f5c5b139a6b569d4649b7...",
+    encryptedMasterKey: "some-encrypted-value"
+  };
+  const result = await client.keys.upsertKey(keyData);
+  console.log("Upserted key via client:", result);
+}
+
+upsertKeyClientExample();
+```
+
 ---
 
 ### 3.3 DELETE `/api/keys/[key]`
@@ -283,6 +327,18 @@ If not found:
 { "message": "Data not found!", "status": 400 }
 ```
 
+#### Using the TypeScript API Client
+
+```ts
+async function deleteKeyClientExample() {
+  const keyLocatorHash = "1122334455667788aaabbbcccdddeeefff0011223344556677aaabbbcccdddee";
+  const deleted = await client.keys.deleteKey(keyLocatorHash);
+  console.log("Deleted key via client:", deleted);
+}
+
+deleteKeyClientExample();
+```
+
 ---
 
 ## 4. Authorization & Roles
@@ -325,10 +381,11 @@ When **creating** a key (via `PUT /api/keys`), please refer to the **key creatio
 
 ## 7. Summary of Keys Endpoints
 
-| **Endpoint**             | **Method** | **Requires**           | **Purpose**                                                                |
-|--------------------------|-----------|------------------------|----------------------------------------------------------------------------|
-| **`/api/keys`**          | **GET**    | Valid bearer & DB hash | List keys; filters by `databaseIdHash`, `keyLocatorHash`, `keyHash`.       |
-| **`/api/keys`**          | **PUT**    | `role === 'owner'`     | Upsert a key by `keyLocatorHash`. Requires reading the Key Context logic.  |
-| **`/api/keys/[key]`**    | **DELETE** | `role === 'owner'`     | Delete a key record by `keyLocatorHash`.                                   |
+| **Endpoint**             | **Method** | **Requires**           | **Purpose**                                                                            |
+|--------------------------|-----------|------------------------|----------------------------------------------------------------------------------------|
+| **`/api/keys`**          | **GET**    | Valid bearer & DB hash | List keys; filters by `databaseIdHash`, `keyLocatorHash`, `keyHash`.                   |
+| **`/api/keys`**          | **PUT**    | `role === 'owner'`     | Upsert a key by `keyLocatorHash`. Requires reading the Key Context logic.              |
+| **`/api/keys/[key]`**    | **DELETE** | `role === 'owner'`     | Delete a key record by `keyLocatorHash`.                                               |
 
 That’s the full **Keys** API reference. Remember to check the [Key Context creation logic](https://github.com/CatchTheTornado/open-agents-builder/blob/a5b5582d1bcb5de04baa53e26ef58086f4c5d436/src/contexts/key-context.tsx#L91) to properly form your key data before calling these endpoints!
+

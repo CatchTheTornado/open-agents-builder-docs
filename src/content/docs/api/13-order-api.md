@@ -133,6 +133,24 @@ async function getOrders() {
 }
 ```
 
+#### Using the TypeScript API Client
+
+You can also retrieve orders using the **open-agents-builder-client**:
+
+```ts
+import { OpenAgentsBuilderClient } from "open-agents-builder-client";
+
+const client = new OpenAgentsBuilderClient({
+  apiKey: "YOUR_API_KEY",
+  databaseIdHash: "YOUR_DATABASE_ID_HASH"
+});
+
+async function listOrdersClientExample() {
+  const orders = await client.order.listOrders({ limit: 5, offset: 0, orderBy: "status", query: "shipped" });
+  console.log("Orders via client:", orders);
+}
+```
+
 #### 3.1.4 Example Response (HTTP 200)
 
 A **paginated** structure:
@@ -260,6 +278,38 @@ upsertOrder({
 });
 ```
 
+#### Using the TypeScript API Client
+
+```ts
+import { OpenAgentsBuilderClient } from "open-agents-builder-client";
+
+const client = new OpenAgentsBuilderClient({
+  apiKey: "YOUR_API_KEY",
+  databaseIdHash: "YOUR_DATABASE_ID_HASH"
+});
+
+async function upsertOrderClientExample() {
+  const updated = await client.order.upsertOrder({
+    id: "ORD-2025-03-21-ABC",
+    status: "new",
+    agentId: "agent-XYZ",
+    email: "[email protected]",
+    items: [
+      {
+        id: "line-1",
+        productSku: "PROD-ABC",
+        variantSku: "VAR-ABC",
+        quantity: 2,
+        price: { value: 50, currency: "USD" }
+      }
+    ],
+    shippingMethod: "UPS",
+    shippingPrice: { value: 10, currency: "USD" }
+  });
+  console.log("Upserted via client:", updated);
+}
+```
+
 #### 3.2.4 Example Success Response (HTTP 200)
 
 ```json
@@ -348,6 +398,25 @@ deleteOrder("ORD-2025-03-21-ABC")
   .catch((err) => console.error(err));
 ```
 
+#### Using the TypeScript API Client
+
+```ts
+import { OpenAgentsBuilderClient } from "open-agents-builder-client";
+
+const client = new OpenAgentsBuilderClient({
+  apiKey: "YOUR_API_KEY",
+  databaseIdHash: "YOUR_DATABASE_ID_HASH"
+});
+
+async function deleteOrderClientExample(orderId: string) {
+  const result = await client.order.deleteOrder(orderId);
+  console.log("Order deleted:", result);
+}
+
+// Usage
+deleteOrderClientExample("ORD-2025-03-21-ABC");
+```
+
 #### 3.3.4 Success Response (HTTP 200)
 
 ```json
@@ -427,4 +496,5 @@ Each error typically includes a JSON structure with `"message"` and `"status"`.
 - Encryption ensures sensitive data (addresses, email) remain secure.  
 - An **audit log** records every create/update/delete action with the differences.
 
-This completes the **Order** endpoint documentation, including both **cURL** and **TypeScript `fetch`** examples.
+This completes the **Order** endpoint documentation, including **cURL**, **TypeScript `fetch`**, **and** **open-agents-builder-client** examples.
+

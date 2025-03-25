@@ -4,7 +4,7 @@ description: Getting started with Open Agnets Builder
 order: 20
 ---
 
-After creating a [free demo access](https://openagentsbuilder.com) or [deploying OAB](../guides/1-getting-started.md) locally  - and opening the app - you should see a screen for picking up the template for your new agent:
+After creating a [free demo access](https://openagentsbuilder.com) or [deploying OAB](../guides/1-getting-started) locally  - and opening the app - you should see a screen for picking up the template for your new agent:
 
 <Image src="../../../assets/templates.png" />
 

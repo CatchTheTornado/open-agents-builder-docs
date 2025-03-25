@@ -23,8 +23,8 @@ Before you begin:
 
 1. Ensure you have **Open Agents Builder** set up.
 2. [**Create an API key**](../api/0-creating-api-key.md) and have it at hand for authorization.
-3. (Optional) Read up on [**concepts and architecture**](../guides/2-concepts.md) to understand how flows, sessions, and tools work together.
-4. Be familiar with [**creating your first agent**](../guides/4-creating-first-agent.md) – but in this case, you’ll ensure to create it as a **Flow/API** type agent.
+3. (Optional) Read up on [**concepts and architecture**](../guides/2-concepts) to understand how flows, sessions, and tools work together.
+4. Be familiar with [**creating your first agent**](../guides/4-creating-first-agent) – but in this case, you’ll ensure to create it as a **Flow/API** type agent.
 
 ---
 
@@ -54,7 +54,7 @@ POST /api/agent/${agentId}/exec
 ### Request Headers
 
 - **Authorization**: `Bearer YOUR_API_KEY`  
-  (See [Creating an API Key](../api/0-creating-api-key.md))
+  (See [Creating an API Key](../api/0-creating-api-key))
 
 - **database-id-hash**: A unique hash referencing your database/tenant.  
   (Check your database’s hash in **Admin > API**.)
@@ -344,4 +344,4 @@ It includes:
 - The **API** supports **streaming** or **buffered** modes, **sync** or **async** execution, and **file** (Base64) inputs.
 - The **output** is broken down into **FlowChunkEvent** objects, each describing a part of the flow execution process.
 
-With this approach, your organization can iterate rapidly on business requirements, while your developers integrate a single endpoint for each agent flow. If you need deeper customization—e.g., building custom tools or transformations—see the [Extending Open Agents Builder with new tools](../extensibility/10-new-tool-integration.md) guide. Happy Flow building!
+With this approach, your organization can iterate rapidly on business requirements, while your developers integrate a single endpoint for each agent flow. If you need deeper customization—e.g., building custom tools or transformations—see the [Extending Open Agents Builder with new tools](../extensibility/10-new-tool-integration) guide. Happy Flow building!

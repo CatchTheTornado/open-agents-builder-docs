@@ -7,7 +7,7 @@ Most of the Open Agents Builder features are available thru the REST API.
 
 > **Note**: There is an API client plus example available on: [https://github.com/CatchTheTornado/open-agents-builder-client](https://github.com/CatchTheTornado/open-agents-builder-client) and [https://github.com/CatchTheTornado/open-agents-builder-example](https://github.com/CatchTheTornado/open-agents-builder-example)
 
-The first step to access it is to [create your fist agent](../guides/4-creating-first-agent.md) and then navigate to the `/api` tab in order to create your first API Key
+The first step to access it is to [create your fist agent](../guides/4-creating-first-agent) and then navigate to the `/api` tab in order to create your first API Key
 
 <Image src="../../../assets/api-keys.png" />
 

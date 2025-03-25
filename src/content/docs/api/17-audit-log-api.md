@@ -139,6 +139,28 @@ createAuditLog({
 }
 ```
 
+#### Using the TypeScript API Client
+
+```ts
+import { OpenAgentsBuilderClient } from "open-agents-builder-client";
+
+const client = new OpenAgentsBuilderClient({
+  apiKey: "<YOUR_API_KEY>",
+  databaseIdHash: "<YOUR_DATABASE_ID_HASH>"
+});
+
+async function createAuditLogClientExample() {
+  const newLog = await client.audit.createAuditLog({
+    eventName: "updateUserProfile",
+    recordLocator: JSON.stringify({ userId: "user-123" }),
+    diff: JSON.stringify({ old: { name: "Alice" }, new: { name: "Alice Updated" } })
+  });
+  console.log("Created log via client:", newLog);
+}
+
+createAuditLogClientExample();
+```
+
 ---
 
 ### 3.2 `GET /api/audit`
@@ -209,6 +231,18 @@ listAuditLogs("2025-02").catch(console.error);
 ]
 ```
 
+#### Using the TypeScript API Client
+
+```ts
+async function listAuditClientExample(partition?: string, limit = 50) {
+  // You can pass optional query parameters to the client.audit.listAudit()
+  const logs = await client.audit.listAudit({ partition, limit });
+  console.log("Audit logs via client:", logs);
+}
+
+listAuditClientExample("2025-02");
+```
+
 ---
 
 ## 4. Encryption Details
@@ -257,9 +291,10 @@ Typical error structure:
 
 ## 7. Summary of Audit Log Endpoints
 
-| **Endpoint**                 | **Method** | **Purpose**                                     |
-|-----------------------------|-----------|-------------------------------------------------|
-| **`/api/audit?partition=`** | **GET**    | List audit logs for a given partition (`YYYY-MM`) or the current month by default. Supports `limit` query param. |
-| **`/api/audit`**            | **PUT**    | Append a new audit log record (`AuditDTO`). The server also auto-populates IP, user agent, etc.                 |
+| **Endpoint**                 | **Method** | **Purpose**                                                                 |
+|-----------------------------|-----------|-----------------------------------------------------------------------------|
+| **`/api/audit?partition=`** | **GET**    | List audit logs for a given partition (`YYYY-MM`) or the current month. Supports `limit`. |
+| **`/api/audit`**            | **PUT**    | Append a new audit log record (`AuditDTO`). The server also auto-populates IP, user agent, etc. |
 
 **That’s it**. Now you can track every event or data change, optionally store diffs, and retrieve them by monthly partitions. If you have more advanced pagination or searching needs (e.g., filtering by eventName, date ranges, etc.), you can extend the code in the repository or implement custom endpoints.
+

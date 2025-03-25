@@ -3,8 +3,7 @@ title: Session Management API
 description: How to create, delete and filter results thru API
 ---
 
-
-Below is a **REST API documentation** for managing **Session** data in your application. The **Session** entity references a single conversation or session with a specific agent (and optionally includes user name/email).  
+Below is a **REST API documentation** for managing **Session** data in your application. The **Session** entity references a single conversation or session with a specific agent (and optionally includes user name/email).
 
 ---
 
@@ -106,6 +105,27 @@ export type SessionDTO = z.infer<typeof sessionDTOSchema>;
   }
   ```
 
+#### Using the TypeScript API Client
+
+Below is an example illustrating how to retrieve session data using the official **open-agents-builder-client**:
+
+```ts
+import { OpenAgentsBuilderClient } from "open-agents-builder-client";
+
+const client = new OpenAgentsBuilderClient({
+  apiKey: "YOUR_API_KEY",
+  databaseIdHash: "YOUR_DATABASE_ID_HASH"
+});
+
+async function listSessions() {
+  // Optionally pass filtering parameters, e.g. { agentId: "agent-123" }
+  const sessions = await client.session.listSessions({ agentId: "agent-123" });
+  console.log("Sessions:", sessions);
+}
+
+listSessions();
+```
+
 ---
 
 ### 3.2 `DELETE /api/session/[id]`
@@ -145,6 +165,25 @@ export type SessionDTO = z.infer<typeof sessionDTOSchema>;
     "status": 400
   }
   ```
+
+#### Using the TypeScript API Client
+
+```ts
+import { OpenAgentsBuilderClient } from "open-agents-builder-client";
+
+const client = new OpenAgentsBuilderClient({
+  apiKey: "YOUR_API_KEY",
+  databaseIdHash: "YOUR_DATABASE_ID_HASH"
+});
+
+async function deleteSessionById(sessionId: string) {
+  await client.session.deleteSession(sessionId);
+  console.log(`Session ${sessionId} deleted.`);
+}
+
+// Usage example
+deleteSessionById("session-001");
+```
 
 ---
 
@@ -215,6 +254,40 @@ export type SessionDTO = z.infer<typeof sessionDTOSchema>;
   }
   ```
   or if `[id]` is missing in the URL.
+
+#### Using the TypeScript API Client
+
+> By default, the `open-agents-builder-client` does **not** provide a direct method for `POST /api/exec/session/[id]`. You can either use a **custom method** or fallback to `fetch`/`axios` for this particular endpoint.
+
+**Example** (using `fetch`):
+
+```ts
+async function createOrGetSession(sessionId: string) {
+  const response = await fetch(`https://app.openagentsbuilder.com/api/exec/session/${sessionId}`, {
+    method: "POST",
+    headers: {
+      "Authorization": `Bearer ${process.env.OPEN_AGENTS_BUILDER_API_KEY}`,
+      "database-id-hash": "YOUR_DATABASE_ID_HASH",
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      agentId: "agent-123",
+      userName: "Alice",
+      userEmail: "[email protected]",
+      acceptTerms: "true"
+    })
+  });
+
+  if (!response.ok) {
+    throw new Error(`Error creating or retrieving session: ${response.status} ${response.statusText}`);
+  }
+
+  const data = await response.json();
+  console.log("Session response:", data);
+}
+
+createOrGetSession("session-XYZ");
+```
 
 ---
 
@@ -295,3 +368,4 @@ Error responses typically have a JSON body with a `"message"` and `"status"`.
 - **Auditing**: Deletion triggers an `auditLog` entry.  
 
 This covers the main endpoints and usage patterns for **Session** data. If you want paginated queries per agent, you can extend the logic with `queryAll()`, similarly to the `Agent` or `Result` endpoints.
+

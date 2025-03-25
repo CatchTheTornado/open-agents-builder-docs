@@ -1,73 +1,70 @@
 ---
-title: Creating the first agent
-description: Getting started with Open Agnets Builder
+title: Creating Your First Agent
+description: Getting started with Open Agents Builder
 order: 20
 ---
 
-After creating a [free demo access](https://openagentsbuilder.com) or [deploying OAB](../guides/1-getting-started) locally  - and opening the app - you should see a screen for picking up the template for your new agent:
+After signing up for a [free demo account](https://openagentsbuilder.com) or [deploying OAB locally](../guides/1-getting-started) and opening the app, you’ll see a screen prompting you to select a template for your new agent:
 
 <Image src="../../../assets/templates.png" />
 
-It's pretty convienient way to get started as the basic 6 templates covers pretty much most of the [supported agent types](../2-concepts).
+This is a convenient way to get started. The six basic templates cover most of the [supported agent types](../2-concepts):
 
-- **Bella Styles - hairdresser bookings** - is a general purpose booking AI Chat - you may create it and then post the link on your webpage to start getting the bookings for visits or services coming from your end - users. This bot uses the `Calendar` module so the bookings will be already checked against and scheduled in internal `Calendar` to avoid overbookings.
+- **Bella Styles – Hairdresser Bookings**  
+  A general-purpose booking AI chat. You could, for instance, place its link on your website so end users can schedule appointments or services. This bot uses the `Calendar` module, so all bookings are checked against your schedule in the internal `Calendar` to prevent overbooking.
 
-- **Cake Factory** - it's an e-commerce and made-to-order product customization bot in which users may create their desired Cake, give the order details and even select a production date - which all ends up scheduling a `Calendar` event, placing an `Order` and keeping the cake specification in the `Result` entity.
+- **Cake Factory**  
+  An e-commerce, made-to-order customization bot that lets users design their cake, provide order details, and select a production date. It concludes by scheduling a `Calendar` event, creating an `Order`, and storing the cake specification in the `Result` entity.
 
-- **InstaFit - fitness shop** - it's another e-commerce agent which has access to the internal `Product and Services` and `Orders` tools - letting your customers chat with the products database and place the orders, it also effectively manages the shopping carts while your customers are still thinking what to buy, not letting the AI to halucinate about the prices or taxes.
+- **InstaFit – Fitness Shop**  
+  Another e-commerce agent with access to `Products and Services` and `Orders`. It allows customers to chat with the products database and place orders. It also manages the shopping cart while customers decide what to buy, preventing the AI from inventing incorrect prices or taxes.
 
-- **Import order or invoices** - this is the `Flows` based agent - which is way more comples and can be non-linear, it also provides the user with the `Form` instead of `Chat` user interface - in which they can upload a PDF, Image, Word or Excel including an order - which using AI OCR features will be transformed and saved as `Order` in the OMS  (!). This agent can be also called via the API.
+- **Import Order or Invoices**  
+  A “Flows”–based agent that’s more complex and non-linear. It provides a `Form` interface instead of a chat, allowing users to upload a PDF, image, Word, or Excel file containing an order, which is then processed using AI OCR and saved as an `Order` in the OMS. This agent can also be called via the API.
 
-- **Analyze Github project** - this `Flows` based agent is here to show you how you can create a parallel generations - in this case, calling the `HTTP` tool to get the issues and project information from Github, handing it over to the report creator sub-agent analyizing the project condition as an end result.
+- **Analyze GitHub Project**  
+  Another “Flows”–based agent showing how to handle parallel processes. It uses the `HTTP` tool to gather issues and other project details from GitHub, then hands that data to a sub-agent to generate a final project analysis report.
 
+For this tutorial, let’s select **"InstaFit – Fitness Shop for Instagram"**.
 
-For our tutorial - please check the **"InstaFit - fitness shop for Instagram"**. 
+---
 
-**Congratulations!** 
+### General Settings
 
-After clicking the "Use template" you should be immediately redirected to a new Agent General settings:
+After clicking **Use template**, you’ll be taken to the **General** settings for your new agent:
 
 <Image src="../../../assets/general.png" />
 
-You can modify the **Welcome Message** which is being shown to your end user once they enter the Agent page. It could contain some intro how they are intended to use this Agent or some info about your company.
+Here you can modify the **Welcome Message** shown to end users upon entering the agent page. It could include a brief introduction, instructions on how to use the agent, or information about your company.
 
-Pretty much important features are located below - where you can (and probably should) provide the users with some **Terms and conditions**. 
+Below that, consider adding **Terms and Conditions**. For an e-commerce agent, this might include store policies, user rights, and how personal data is processed. If you plan to make your agent public, consult a legal advisor to ensure compliance with all applicable requirements. You can make users confirm these terms before they can proceed.
 
-For example if you're building an e-commerce agent it should be your e-store policy containing info on how you handle customers rights, how you process their personal data etc.
-
-If you're about to publish your agent to a wider audience - please consider asking your Legal Advisor in order to help creating the terms.
-
-Users **Must confirm the terms** if you provide them and check this option.
-
-The last two options are set for making the users provide the Name and E-mail for getting the access to the agent itself and the last checkbox **Published** marks if the agent is just available for internal purposes (after authenthication) or **publicly available** when the checkbox is checked. Make sure it's published before sharing it with your customers :)
+Lastly, you can require users to provide a **Name** and **Email** before accessing the agent. The **Published** checkbox determines whether the agent is publicly available or restricted for internal use. If you’d like to share it with customers, make sure it’s published.
 
 <Image src="../../../assets/general-bottom.png" />
 
+---
 
-## Setting the prompt
+### Setting the Prompt
 
-After having the general settings set and done you might want to go to the **Prompt** tab. This is where you set the flow for your agent - describing each step it should take in response to the user's feedback
+Once you’ve adjusted the general settings, head to the **Prompt** tab. This is where you define how your agent responds, step by step, to user input.
 
 <Image src="../../../assets/ai-prompt.png" />
 
-In our case it's describing the shop assistant behavior - please don't hesitate to play with the prompt and modify it to check how does it work.
-
-After every change you can **Preview** your agent using the button in the top-bar.
+In this template, the prompt describes how the shop assistant behaves. Feel free to experiment with it to see how changes affect interactions. After each adjustment, click **Preview** in the top bar to open the end-user Chat UI in a new browser tab and test it.
 
 <Image src="../../../assets/top-bar.png" />
 
-When you click it the End User - Chat UI will be opened in new browser tab so you can test how it works.
-
-If you're wondering where the heck the agent is taking the products from - it's from the **Products and services** tab where you can define them. 
-
-**Note**: The products catalog is shared between agents so it's easier for you to create for example an agent for specific category or types of products while operating on a shared catalog.
+You might wonder where the agent’s product data comes from. It’s stored in the **Products and Services** tab, where you can add or modify items:
 
 <Image src="../../../assets/screenshot-oab-4.png" />
 
-The product has the access to the product catalog and - by the way - can create Orders because they're given access to it on the **Tools tab** where you can check all the available tools as well and maybe enable some other ones as well.
+The agent can access this product catalog (and even create orders) because these capabilities are granted in the **Tools** tab. There, you can enable or disable specific tools and explore other possibilities.
 
 <Image src="../../../assets/tools.png" />
 
+---
 
-***Congratulations!*** Your first agent has been just created. Don't hesitate to try out all the other templates or to play with some new concepts using the Blank template as well.
+### Congratulations!
 
+You’ve created your first agent! Feel free to explore other templates or try building something from scratch with the Blank template. Have fun experimenting and discovering all that Open Agents Builder can do.

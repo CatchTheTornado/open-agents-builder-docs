@@ -121,6 +121,34 @@ curl -X PUT \
 }
 ```
 
+#### Using the TypeScript API Client
+
+You can also upsert attachments via **open-agents-builder-client**. The default method uses a JSON body, but you can extend it to handle multipart uploads. **Example**:
+
+```ts
+import { OpenAgentsBuilderClient } from "open-agents-builder-client";
+
+const client = new OpenAgentsBuilderClient({
+  apiKey: "YOUR_API_KEY",
+  databaseIdHash: "YOUR_DATABASE_ID_HASH"
+});
+
+async function upsertAttachmentClientExample() {
+  const result = await client.attachment.upsertAttachment({
+    storageKey: "file-key-123",
+    displayName: "example.txt",
+    mimeType: "text/plain",
+    content: "Some text content"
+  });
+
+  console.log("Upserted attachment via client:", result);
+}
+
+upsertAttachmentClientExample();
+```
+
+*(For true multipart file uploads, see the [example repo](https://github.com/CatchTheTornado/open-agents-builder-example).)*
+
 ---
 
 ### 3.2 **List All** – `GET /api/attachment`
@@ -134,6 +162,17 @@ curl -X GET \
   "https://app.openagentsbuilder.com/api/attachment" \
   -H "Authorization: Bearer <YOUR_API_KEY>" \
   -H "database-id-hash: <YOUR_DATABASE_ID_HASH>"
+```
+
+#### Using the TypeScript API Client
+
+```ts
+async function listAttachmentsClient() {
+  const result = await client.attachment.listAttachments();
+  console.log("All attachments:", result);
+}
+
+listAttachmentsClient();
 ```
 
 ---
@@ -162,6 +201,22 @@ Returns a paginated structure:
 }
 ```
 
+#### Using the TypeScript API Client
+
+```ts
+async function queryAttachmentsClient() {
+  const result = await client.attachment.queryAttachments({
+    limit: 5,
+    offset: 0,
+    orderBy: "createdAt",
+    query: "jpg"
+  });
+  console.log("Queried attachments:", result);
+}
+
+queryAttachmentsClient();
+```
+
 ---
 
 ### 3.4 **Retrieve Binary (Authorized)** – `GET /api/attachment/[id]`
@@ -174,6 +229,33 @@ curl -X GET \
   -H "Authorization: Bearer <YOUR_API_KEY>" \
   -H "database-id-hash: <YOUR_DATABASE_ID_HASH>" \
   -o downloaded-file
+```
+
+#### Using the TypeScript API Client
+
+> **Note**: The default `attachment` client does not have a special method for downloading raw binary. You can use `listAttachments` or `queryAttachments` to get metadata, then fetch the binary separately with `fetch`.
+
+```ts
+async function downloadAttachmentBinary(storageKey: string) {
+  const response = await fetch(
+    `https://app.openagentsbuilder.com/api/attachment/${storageKey}`,
+    {
+      headers: {
+        "Authorization": `Bearer ${process.env.OPEN_AGENTS_BUILDER_API_KEY}`,
+        "database-id-hash": "YOUR_DATABASE_ID_HASH"
+      }
+    }
+  );
+
+  if (!response.ok) {
+    throw new Error(`Error fetching attachment: ${response.statusText}`);
+  }
+
+  const blob = await response.blob();
+  // or arrayBuffer()
+  console.log("Downloaded blob:", blob);
+  return blob;
+}
 ```
 
 ---
@@ -214,6 +296,8 @@ async function fetchPublicAttachment(databaseIdHash: string, storageKey: string)
 }
 ```
 
+*(No official client method exists for public retrieval since it’s unauthenticated.)*
+
 ---
 
 ### 3.6 **Delete** – `DELETE /api/attachment/[id]`
@@ -245,6 +329,17 @@ If not found:
 }
 ```
 
+#### Using the TypeScript API Client
+
+```ts
+async function deleteAttachmentClientExample(storageKey: string) {
+  const deleted = await client.attachment.deleteAttachment(storageKey);
+  console.log("Deleted attachment:", deleted);
+}
+
+deleteAttachmentClientExample("my-file-key");
+```
+
 ---
 
 ### 3.7 **Export** – `GET /api/attachment/export`
@@ -264,6 +359,31 @@ curl -X GET \
   -H "Authorization: Bearer <YOUR_API_KEY>" \
   -H "database-id-hash: <YOUR_DATABASE_ID_HASH>" \
   -o attachments.zip
+```
+
+#### Using the TypeScript API Client
+
+> The default client does not have a dedicated export method, but you can extend it if needed.
+
+```ts
+import { BaseClient } from "open-agents-builder-client";
+
+class ExtendedAttachmentApi extends BaseClient {
+  public async exportAttachments(): Promise<Blob> {
+    const url = `${this.baseUrl}/api/attachment/export`;
+    const resp = await fetch(url, {
+      method: "GET",
+      headers: {
+        "Authorization": `Bearer ${this.apiKey}`,
+        "database-id-hash": this.databaseIdHash
+      }
+    });
+    if (!resp.ok) {
+      throw new Error(`Error exporting attachments: ${resp.statusText}`);
+    }
+    return resp.blob();
+  }
+}
 ```
 
 ---
@@ -302,3 +422,4 @@ If a **SaaS** `storageKey` is provided:
 | `/api/attachment/export`                                                      | **GET**    | **Yes**            | Export all attachments in a ZIP (`index.md/html`, each file, plus `.md/html` if `content` exists, JSON).    |
 
 This completes the **Attachments** documentation, now featuring a **public** route (`/storage/attachment/[databaseIdHash]/[id]`) for unauthenticated file access.
+

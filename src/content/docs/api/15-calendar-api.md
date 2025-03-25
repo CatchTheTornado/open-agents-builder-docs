@@ -3,7 +3,6 @@ title: Calendar Management API
 description: How to create, delete and filter calendar events thru API
 ---
 
-
 Below is a **REST API documentation** for managing **Calendar Events** in your application, with both **cURL** and **TypeScript** examples. The base URL in examples is **`https://app.openagentsbuilder.com`**.  
 
 ---
@@ -73,7 +72,7 @@ Returns **all** calendar events, optionally filtered by `id`, `agentId`, or `ses
 
 - **`id`**: Return only the event with this ID.  
 - **`agentId`**: Return events belonging to a specific agent.  
-- **`sessionId`**: Return events with a matching `sessionId`.  
+- **`sessionId`**: Return events with a matching `sessionId`.
 
 #### 3.1.3 cURL Example
 
@@ -107,6 +106,25 @@ async function getCalendarEvents() {
   console.log("Calendar events:", data);
   return data;
 }
+```
+
+#### Using the TypeScript API Client
+
+```ts
+import { OpenAgentsBuilderClient } from "open-agents-builder-client";
+
+const client = new OpenAgentsBuilderClient({
+  apiKey: "YOUR_API_KEY",
+  databaseIdHash: "<YOUR_DATABASE_ID_HASH>"
+});
+
+async function listEventsClientExample() {
+  // This method returns an array of CalendarEventDTO
+  const events = await client.calendar.listEvents({ agentId: "agent-123" });
+  console.log("Calendar events (client):", events);
+}
+
+listEventsClientExample();
 ```
 
 #### 3.1.5 Example Success Response (HTTP 200)
@@ -209,6 +227,30 @@ upsertCalendarEvent({
 }).catch(console.error);
 ```
 
+#### Using the TypeScript API Client
+
+```ts
+import { OpenAgentsBuilderClient } from "open-agents-builder-client";
+
+const client = new OpenAgentsBuilderClient({
+  apiKey: "YOUR_API_KEY",
+  databaseIdHash: "<YOUR_DATABASE_ID_HASH>"
+});
+
+async function upsertCalendarEventClientExample() {
+  const result = await client.calendar.upsertEvent({
+    id: "evt-001",
+    title: "Meeting with Bob",
+    agentId: "agent-123",
+    start: "2025-04-01T10:00:00.000Z",
+    end: "2025-04-01T11:00:00.000Z"
+  });
+  console.log("Upserted event via client:", result);
+}
+
+upsertCalendarEventClientExample();
+```
+
 #### 3.2.5 Example Success Response (HTTP 200)
 
 ```json
@@ -275,6 +317,24 @@ async function deleteCalendarEvent(eventId: string) {
 deleteCalendarEvent("evt-001").catch(console.error);
 ```
 
+#### Using the TypeScript API Client
+
+```ts
+import { OpenAgentsBuilderClient } from "open-agents-builder-client";
+
+const client = new OpenAgentsBuilderClient({
+  apiKey: "YOUR_API_KEY",
+  databaseIdHash: "<YOUR_DATABASE_ID_HASH>"
+});
+
+async function deleteCalendarEventClientExample() {
+  const result = await client.calendar.deleteEvent("evt-001");
+  console.log("Deleted event via client:", result);
+}
+
+deleteCalendarEventClientExample();
+```
+
 #### 3.3.4 Example Success Response (HTTP 200)
 
 ```json
@@ -328,11 +388,11 @@ All errors typically include a JSON structure:
 
 ## 6. Summary of Endpoints
 
-| **Endpoint**                    | **HTTP** | **Purpose**                                        |
-|--------------------------------|---------|----------------------------------------------------|
+| **Endpoint**                    | **HTTP** | **Purpose**                                                     |
+|--------------------------------|---------|-----------------------------------------------------------------|
 | `/api/calendar`                | **GET**  | List all events (optional `id`, `agentId`, `sessionId` filter). |
-| `/api/calendar`                | **PUT**  | Upsert (create/update) a calendar event by `id`.   |
-| `/api/calendar/[id]`           | **DELETE** | Remove the specified event by `id`.               |
+| `/api/calendar`                | **PUT**  | Upsert (create/update) a calendar event by `id`.                |
+| `/api/calendar/[id]`           | **DELETE** | Remove the specified event by `id`.                              |
 
 ---
 
@@ -343,3 +403,4 @@ All errors typically include a JSON structure:
 - Delete an event (`DELETE /api/calendar/[id]`).  
 
 Sensitive fields may be encrypted at rest, ensuring privacy. If you need advanced search features (e.g., date ranges), you can expand the code in `ServerCalendarRepository`.
+

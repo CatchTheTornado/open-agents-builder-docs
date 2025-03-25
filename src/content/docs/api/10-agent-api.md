@@ -1,13 +1,15 @@
 ---
 title: Agent Management API
-description: How to create, delete and filter agents thru API
+description: How to create, delete, and filter agents through the API
 ---
 
-Below is a **comprehensive REST API documentation** for the **Agent** resource, covering both the base `/api/agent` endpoint (GET, PUT) and the **new** `/api/agent/[id]` endpoint (DELETE). All documentation is in **English**.  
+Below is a **comprehensive REST API documentation** for the **Agent** resource, covering both the base `/api/agent` endpoint (GET, PUT) and the **new** `/api/agent/[id]` endpoint (DELETE). All documentation is in **English**.
 
 ---
 
-> **Note**: There is an API client plus example available on: [https://github.com/CatchTheTornado/open-agents-builder-client](https://github.com/CatchTheTornado/open-agents-builder-client) and [https://github.com/CatchTheTornado/open-agents-builder-example](https://github.com/CatchTheTornado/open-agents-builder-example)
+> **Note**: An official API client (in TypeScript) and example projects are available at:
+> - [open-agents-builder-client](https://github.com/CatchTheTornado/open-agents-builder-client)
+> - [open-agents-builder-example](https://github.com/CatchTheTornado/open-agents-builder-example)
 
 ---
 
@@ -27,11 +29,11 @@ We have two primary endpoint groups for managing **Agent** data:
 ## **2. Mandatory Request Headers**
 
 1. **`Authorization: Bearer <OPEN_AGENT_BUILDER_API_KEY>`**  
-   - Used for authentication. Replace `<OPEN_AGENT_BUILDER_API_KEY>` with your actual API key.  
+   - Used for authentication. Replace `<OPEN_AGENT_BUILDER_API_KEY>` with your actual API key.
 
 2. **`database-id-hash: <YOUR_DATABASE_ID_HASH>`**  
-   - A constant key **per user’s database**.  
-   - Obtain this hash from the *API tab* in the administration panel.  
+   - A constant key **per user’s database**.
+   - Obtain this hash from the *API tab* in the administration panel.
 
 Example:
 ```
@@ -43,7 +45,7 @@ database-id-hash: 35f5c5b139a6b569d4649b788c1851831eb44d8e32b716b8411ec6431af812
 
 ## **3. Data Schema & Validation Rules**
 
-From the `agentDTOSchema` (using [zod](https://github.com/colinhacks/zod)):
+From the `agentDTOSchema` (using [Zod](https://github.com/colinhacks/zod)):
 
 ```ts
 import { z } from 'zod';
@@ -71,13 +73,14 @@ export const agentDTOSchema = z.object({
   icon: z.string().optional().nullable(),
   extra: z.string().optional().nullable()
 });
+
 export type AgentDTO = z.infer<typeof agentDTOSchema>;
 ```
 
 - **`displayName`** is required (`min(1)`).
 - **`id`**:
-  - Omit or set `null` to **create** a new agent.  
-  - Provide an existing `id` to **update** an agent.  
+  - Omit or set `null` to **create** a new agent.
+  - Provide an existing `id` to **update** an agent.
 - All other fields are optional. Some fields accept `null`.
 
 ---
@@ -93,37 +96,52 @@ export type AgentDTO = z.infer<typeof agentDTOSchema>;
   - `offset` (e.g., `?offset=0`)
   - Others (e.g., `?id=<someId>`) to filter by certain fields.
 
-- **Example cURL**:
-  ```bash
-  curl -X GET \
-    "https://app.openagentsbuilder.com/api/agent?limit=10&offset=0" \
-    -H "Authorization: Bearer abc1234exampleKey" \
-    -H "database-id-hash: 35f5c5b139a6b569d4649b788c1851831eb44d8e32b716b8411ec6431af8121d"
-  ```
-  
-- **Example TypeScript (fetch)**:
-  ```ts
-  async function getAgents() {
-    const response = await fetch("https://app.openagentsbuilder.com/api/agent?limit=10&offset=0", {
-      method: "GET",
-      headers: {
-        "Authorization": "Bearer abc1234exampleKey",
-        "database-id-hash": "35f5c5b139a6b569d4649b788c1851831eb44d8e32b716b8411ec6431af8121d"
-      }
-    });
-    const data = await response.json();
-    console.log("Agents:", data);
-  }
-  ```
+#### Example with **cURL**:
+```bash
+curl -X GET \
+  "https://app.openagentsbuilder.com/api/agent?limit=10&offset=0" \
+  -H "Authorization: Bearer abc1234exampleKey" \
+  -H "database-id-hash: 35f5c5b139a6b569d4649b788c1851831eb44d8e32b716b8411ec6431af8121d"
+```
 
-- **Successful Response** (HTTP `200`):
-  ```json
-  [
-    {
-      "id": "agent-123",
-      "displayName": "My First Agent",
-      "prompt": "Sample prompt",
-      "options": null,
+#### Example with **fetch**:
+```ts
+async function getAgents() {
+  const response = await fetch("https://app.openagentsbuilder.com/api/agent?limit=10&offset=0", {
+    method: "GET",
+    headers: {
+      "Authorization": "Bearer abc1234exampleKey",
+      "database-id-hash": "35f5c5b139a6b569d4649b788c1851831eb44d8e32b716b8411ec6431af8121d"
+    }
+  });
+  const data = await response.json();
+  console.log("Agents:", data);
+}
+```
+
+#### Example with **open-agents-builder-client**:
+```ts
+import { OpenAgentsBuilderClient } from "open-agents-builder-client";
+
+const client = new OpenAgentsBuilderClient({
+  databaseIdHash: "35f5c5b139a6b569d4649b7...",
+  apiKey: "abc1234exampleKey"
+});
+
+async function listAgents() {
+  const agents = await client.agent.listAgents({ limit: 10, offset: 0 });
+  console.log("Agents:", agents);
+}
+```
+
+**Successful Response** (HTTP `200`):
+```json
+[
+  {
+    "id": "agent-123",
+    "displayName": "My First Agent",
+    "prompt": "Sample prompt",
+    "options": null,
       "expectedResult": null,
       "safetyRules": null,
       "published": null,
@@ -140,15 +158,17 @@ export type AgentDTO = z.infer<typeof agentDTOSchema>;
       "agents": null,
       "icon": null,
       "extra": null
-    },
-    {
-      "id": "agent-456",
-      "displayName": "Another Agent",
-      "prompt": "Some text ...",
-      "...": "..."
-    }
-  ]
-  ```
+  },
+  {
+    "id": "agent-456",
+    "displayName": "Another Agent",
+    "prompt": "Some text ...",
+    "...": "..."
+  }
+]
+```
+
+---
 
 #### **4.1.2 PUT** `/api/agent`
 
@@ -156,65 +176,88 @@ export type AgentDTO = z.infer<typeof agentDTOSchema>;
   - If `id` is **omitted**, a new agent is created.  
   - If `id` **exists** (and is found), that agent is updated.
 
-- **Example cURL** (Create new):
-  ```bash
-  curl -X PUT \
-    https://app.openagentsbuilder.com/api/agent \
-    -H "Authorization: Bearer abc1234exampleKey" \
-    -H "database-id-hash: 35f5c5b139a6b569d4649b788c1851831eb44d8e32b716b8411ec6431af8121d" \
-    -H "Content-Type: application/json" \
-    -d '{
-      "displayName": "New Agent",
-      "prompt": "Hello from my new agent"
-    }'
-  ```
+##### Example with **cURL** (Create new):
+```bash
+curl -X PUT \
+  https://app.openagentsbuilder.com/api/agent \
+  -H "Authorization: Bearer abc1234exampleKey" \
+  -H "database-id-hash: 35f5c5b139a6b569d4649b788c1851831eb44d8e32b716b8411ec6431af8121d" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "displayName": "New Agent",
+    "prompt": "Hello from my new agent"
+  }'
+```
 
-- **Example cURL** (Update existing by `id`):
-  ```bash
-  curl -X PUT \
-    https://app.openagentsbuilder.com/api/agent \
-    -H "Authorization: Bearer abc1234exampleKey" \
-    -H "database-id-hash: 35f5c5b139a6b569d4649b788c1851831eb44d8e32b716b8411ec6431af8121d" \
-    -H "Content-Type: application/json" \
-    -d '{
-      "id": "agent-123",
-      "displayName": "Agent 123 updated",
-      "prompt": "Updated prompt text"
-    }'
-  ```
+##### Example with **cURL** (Update existing by `id`):
+```bash
+curl -X PUT \
+  https://app.openagentsbuilder.com/api/agent \
+  -H "Authorization: Bearer abc1234exampleKey" \
+  -H "database-id-hash: 35f5c5b139a6b569d4649b788c1851831eb44d8e32b716b8411ec6431af8121d" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "id": "agent-123",
+    "displayName": "Agent 123 updated",
+    "prompt": "Updated prompt text"
+  }'
+```
 
-- **Example TypeScript (axios)**:
-  ```ts
-  import axios from "axios";
+##### Example with **axios**:
+```ts
+import axios from "axios";
 
-  async function createOrUpdateAgent(agentData: any) {
-    const response = await axios.put("https://app.openagentsbuilder.com/api/agent", agentData, {
+async function createOrUpdateAgent(agentData: any) {
+  const response = await axios.put(
+    "https://app.openagentsbuilder.com/api/agent",
+    agentData,
+    {
       headers: {
         "Authorization": "Bearer abc1234exampleKey",
         "database-id-hash": "35f5c5b139a6b569d4649b788c1851831eb44d8e32b716b8411ec6431af8121d",
         "Content-Type": "application/json"
       }
-    });
-    console.log("Operation successful. Returned data:", response.data);
-  }
+    }
+  );
+  console.log("Operation successful. Returned data:", response.data);
+}
 
-  // Usage example:
-  createOrUpdateAgent({
-    "id": "agent-XYZ",
-    "displayName": "Updated Agent",
-    "prompt": "New prompt"
+// Usage example:
+createOrUpdateAgent({
+  "id": "agent-XYZ",
+  "displayName": "Updated Agent",
+  "prompt": "New prompt"
+});
+```
+
+##### Example with **open-agents-builder-client**:
+```ts
+import { OpenAgentsBuilderClient } from "open-agents-builder-client";
+
+const client = new OpenAgentsBuilderClient({
+  databaseIdHash: "35f5c5b139a6b569d4649b7...",
+  apiKey: "abc1234exampleKey"
+});
+
+async function upsertAgent() {
+  const updated = await client.agent.upsertAgent({
+    id: "agent-XYZ",
+    displayName: "Agent 123 updated",
+    prompt: "Updated prompt text"
   });
-  ```
+  console.log("Upsert response:", updated);
+}
+```
 
-- **Successful Response** (HTTP `200`):
-  ```json
-  {
-    "message": "Data saved successfully!",
-    "data": {
-      "id": "agent-123",
-      "displayName": "Agent 123 updated",
-      "prompt": "Updated prompt text",
-      "options": null,
+**Successful Response** (HTTP `200`):
+```json
+{
+  "message": "Data saved successfully!",
+  "data": {
+    "id": "agent-123",
+    "displayName": "Agent 123 updated",
+    "prompt": "Updated prompt text",
+    "options": null,
       "expectedResult": null,
       "safetyRules": null,
       "published": null,
@@ -226,28 +269,28 @@ export type AgentDTO = z.infer<typeof agentDTOSchema>;
       "createdAt": "2025-03-20T12:45:01.000Z",
       "updatedAt": "2025-03-20T12:46:22.000Z",
       "...": "..."
-    },
-    "status": 200
-  }
-  ```
+  },
+  "status": 200
+}
+```
 
-- **Validation Error** (HTTP `400`):
-  ```json
-  {
-    "message": "Validation failed: displayName is required",
-    "issues": [
-      {
-        "code": "too_small",
-        "minimum": 1,
-        "type": "string",
-        "inclusive": true,
-        "path": ["displayName"],
-        "message": "String must contain at least 1 character(s)"
-      }
-    ],
-    "status": 400
-  }
-  ```
+**Validation Error** (HTTP `400`):
+```json
+{
+  "message": "Validation failed: displayName is required",
+  "issues": [
+    {
+      "code": "too_small",
+      "minimum": 1,
+      "type": "string",
+      "inclusive": true,
+      "path": ["displayName"],
+      "message": "String must contain at least 1 character(s)"
+    }
+  ],
+  "status": 400
+}
+```
 
 ---
 
@@ -261,61 +304,77 @@ export type AgentDTO = z.infer<typeof agentDTOSchema>;
   - **Sessions** (`sessionRepo.delete({ agentId: <id> })`)
   - **Calendar events** (`calendarRepo.delete({ agentId: <id> })`)
 
-  If the `id` is missing or invalid in the URL, a `400` is returned.  
+  If the `id` is missing or invalid in the URL, a `400` is returned.
 
-- **Example cURL**:
-  ```bash
-  curl -X DELETE \
-    https://app.openagentsbuilder.com/api/agent/agent-123 \
-    -H "Authorization: Bearer abc1234exampleKey" \
-    -H "database-id-hash: 35f5c5b139a6b569d4649b788c1851831eb44d8e32b716b8411ec6431af8121d"
-  ```
+##### Example with **cURL**:
+```bash
+curl -X DELETE \
+  https://app.openagentsbuilder.com/api/agent/agent-123 \
+  -H "Authorization: Bearer abc1234exampleKey" \
+  -H "database-id-hash: 35f5c5b139a6b569d4649b788c1851831eb44d8e32b716b8411ec6431af8121d"
+```
 
-- **Example TypeScript (fetch)**:
-  ```ts
-  async function deleteAgent(agentId: string) {
-    const response = await fetch(`https://app.openagentsbuilder.com/api/agent/${agentId}`, {
-      method: "DELETE",
-      headers: {
-        "Authorization": "Bearer abc1234exampleKey",
-        "database-id-hash": "35f5c5b139a6b569d4649b788c1851831eb44d8e32b716b8411ec6431af8121d"
-      }
-    });
+##### Example with **fetch**:
+```ts
+async function deleteAgent(agentId: string) {
+  const response = await fetch(`https://app.openagentsbuilder.com/api/agent/${agentId}`, {
+    method: "DELETE",
+    headers: {
+      "Authorization": "Bearer abc1234exampleKey",
+      "database-id-hash": "35f5c5b139a6b569d4649b788c1851831eb44d8e32b716b8411ec6431af8121d"
+    }
+  });
 
-    const result = await response.json();
-    console.log("Delete result:", result);
-  }
+  const result = await response.json();
+  console.log("Delete result:", result);
+}
 
-  // Usage example:
-  deleteAgent("agent-123");
-  ```
+// Usage example:
+deleteAgent("agent-123");
+```
 
-- **Successful Response** (HTTP `200`):
-  ```json
-  {
-    "message": "Data deleted successfully!",
-    "status": 200
-  }
-  ```
-  
-  If the agent was found and deleted, you’ll see `"status": 200`.  
+##### Example with **open-agents-builder-client**:
+```ts
+import { OpenAgentsBuilderClient } from "open-agents-builder-client";
 
-- **Not Found / Nothing Deleted** (HTTP `400`):
-  ```json
-  {
-    "message": "Data not found!",
-    "status": 400
-  }
-  ```
-  This can happen if the agent does not exist.  
+const client = new OpenAgentsBuilderClient({
+  databaseIdHash: "35f5c5b139a6b569d4649b7...",
+  apiKey: "abc1234exampleKey"
+});
 
-- **Missing ID** (HTTP `400`):
-  ```json
-  {
-    "message": "Invalid request, no id provided within request url",
-    "status": 400
-  }
-  ```
+async function removeAgent(agentId: string) {
+  await client.agent.deleteAgent(agentId);
+  console.log(`Agent ${agentId} was deleted.`);
+}
+
+// Usage
+removeAgent("agent-123");
+```
+
+**Successful Response** (HTTP `200`):
+```json
+{
+  "message": "Data deleted successfully!",
+  "status": 200
+}
+```
+
+**Not Found / Nothing Deleted** (HTTP `400`):
+```json
+{
+  "message": "Data not found!",
+  "status": 400
+}
+```
+(This can happen if the agent does not exist.)
+
+**Missing ID** (HTTP `400`):
+```json
+{
+  "message": "Invalid request, no id provided within request url",
+  "status": 400
+}
+```
 
 ---
 
@@ -345,7 +404,7 @@ In any error scenario, the response body generally includes:
 
 ## **6. Notes & Additional Info**
 
-- **`database-id-hash`** is a unique identifier for your user database.  
+- **`database-id-hash`** is a unique identifier for your user database.
 - The code snippet under the hood also performs an **audit log** for create, update, or delete. This is not directly visible in normal operations but ensures record-keeping in the background.
 - When deleting an agent, any associated records in other tables (`results`, `sessions`, `calendar events`) are also removed—this ensures data consistency.
 - If you are using the **SaaS mode** with usage limits, certain actions (like creating new agents) might be restricted if you exceed your quota.
@@ -355,11 +414,10 @@ In any error scenario, the response body generally includes:
 ## **7. Summary of Endpoints**
 
 1. **GET** `/api/agent`  
-   - Get all agents (optionally filter with query parameters).  
+   - Get all agents (optionally filter with query parameters).
 
 2. **PUT** `/api/agent`  
-   - Create a new agent (no `id`) or update an existing agent (with `id`).  
+   - Create a new agent (no `id`) or update an existing agent (`id`).
 
 3. **DELETE** `/api/agent/[id]`  
-   - Delete a specific agent by its `id`. Also cascades to related `Result`, `Session`, and `Calendar` records.  
-
+   - Delete a specific agent by its `id`. Also cascades to related `Result`, `Session`, and `Calendar` records.

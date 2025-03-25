@@ -1,39 +1,46 @@
 ---
 title: Creating the API Key
-description: How to get manage the API keys
+description: How to manage the API keys
 ---
 
-Most of the Open Agents Builder features are available thru the REST API.
+Most of Open Agents Builder's features are accessible via a REST API.
 
-> **Note**: There is an API client plus example available on: [https://github.com/CatchTheTornado/open-agents-builder-client](https://github.com/CatchTheTornado/open-agents-builder-client) and [https://github.com/CatchTheTornado/open-agents-builder-example](https://github.com/CatchTheTornado/open-agents-builder-example)
+> **Note:** There is an API client and example code available at [https://github.com/CatchTheTornado/open-agents-builder-client](https://github.com/CatchTheTornado/open-agents-builder-client) and [https://github.com/CatchTheTornado/open-agents-builder-example](https://github.com/CatchTheTornado/open-agents-builder-example).
 
-The first step to access it is to [create your fist agent](../guides/4-creating-first-agent) and then navigate to the `/api` tab in order to create your first API Key
+---
+
+## Getting Your API Key
+
+1. [Create your first agent](../guides/4-creating-first-agent).  
+2. Navigate to the `/api` tab to generate a new API key.
 
 <Image src="../../../assets/api-keys.png" />
 
-When you click the **Add API Key** button new API Key will be generated - but **Please note** this key is **NOT STORED IN THE APPLICATION** so we will not be able to show it again to you! Please copy and store it in the safe place. 
+When you click **Add API Key**, a new API key will be generated, but **note that it is not stored in the application**. Once shown, it cannot be retrieved again, so be sure to copy and save it somewhere safe.
 
 <Image src="../../../assets/create-key.png" />
 
-The best option would probably be to set it in your current shell env (eg. exporting it in the `~/.bashrc` or `~/.zshrc` files) so it will be available every time you are about to call it:
+A good practice is to set it as an environment variable in your shell (e.g., in `~/.bashrc` or `~/.zshrc`) so it’s readily available:
 
 ```bash
-export OPEN_AGENTS_BUILDER_API_KEY=ad_key_eyJhbGciOiJIUzI1NiJ9.eyJkYXRhYmFzZUlkSGFzaCI6IjM1ZjVjNWIxMzlhNmI1NjlkNDY0OWI3ODhjMTg1MTgzMWViNDRkOGUzMmI3MTZiODQxMWVjNjQzMWFmODEyMWQiLCJrZXlIYXNoIjoiJGFyZ29uMmQkdj0xOSRtPTE2Mzg0LHQ9MixwPTEkTUhkcU0ydGpVV1JRTmxOeFUwSXpOVlJpU1dWdFEyd3JVVGRtYjFaTlZVNXJWemhYT0VWMEx6TlRVVDAkNzgvdDZMczhzTkk2T3R1TjJ0dUpiZmZ1U2lIM24vbFNueU5sUlM0QkVYbyIsImtleUxvY2F0b3JIYXNoIjoiNGIzYzkzYTFhZGJjZTg0YjY5NmRkNWZiMWI2YTExZTFhZjA1ZjA3ZjIxZmVjYjY3YzU1ZDMyYzE0MzEyOTdlNSIsImlhdCI6MTc0MjQ3NjQ4MiwiaXNzIjoidXJuOmN0dDpvcGVuLWFnZW50cy1idWlsZGVyIiwiYXVkIjoidXJuOmN0dDpvcGVuLWFnZW50cy1idWlsZGVyIn0.iRluH4hmZXNJ0fqrdt9Mwn1o-K8VfDOwxoIpBE_lg6s
+export OPEN_AGENTS_BUILDER_API_KEY=ad_key_eyJhbGciOiJIUzI1NiJ9.eyJkYXRhYmFzZUlkSGFzaCI6IjM1ZjVjNWIx...
 ```
 
-After running this command, your API Key will be available under the `$OPEN_AGENTS_BUILDER_API_KEY` environment variable.
+When you open a new shell, this API key will be available as `$OPEN_AGENTS_BUILDER_API_KEY`.
 
-To check if the API works please just call the:
+---
+
+## Testing the API (via CURL)
+
+To verify that the API works, run:
 
 ```bash
-curl -X GET -H "Authorization: Bearer ad_key_eyJhbGciOiJIUzI1NiJ9.eyJkYXRhYmFzZUlkSGFzaCI6IjM1ZjVjNWIxMzlhNmI1NjlkNDY0OWI3ODhjMTg1MTgzMWViNDRkOGUzMmI3MTZiODQxMWVjNjQzMWFmODEyMWQiLCJrZXlIYXNoIjoiJGFyZ29uMmQkdj0xOSRtPTE2Mzg0LHQ9MixwPTEkTUhkcU0ydGpVV1JRTmxOeFUwSXpOVlJpU1dWdFEyd3JVVGRtYjFaTlZVNXJWemhYT0VWMEx6TlRVVDAkNzgvdDZMczhzTkk2T3R1TjJ0dUpiZmZ1U2lIM24vbFNueU5sUlM0QkVYbyIsImtleUxvY2F0b3JIYXNoIjoiNGIzYzkzYTFhZGJjZTg0YjY5NmRkNWZiMWI2YTExZTFhZjA1ZjA3ZjIxZmVjYjY3YzU1ZDMyYzE0MzEyOTdlNSIsImlhdCI6MTc0MjQ3NjQ4MiwiaXNzIjoidXJuOmN0dDpvcGVuLWFnZW50cy1idWlsZGVyIiwiYXVkIjoidXJuOmN0dDpvcGVuLWFnZW50cy1idWlsZGVyIn0.iRluH4hmZXNJ0fqrdt9Mwn1o-K8VfDOwxoIpBE_lg6s" \
+curl -X GET -H "Authorization: Bearer ad_key_eyJhbGciOiJIUzI1NiJ9.eyJkYXRhYmFzZUlkSGFzaCI6IjM1ZjVjNWIxMzlhN..." \
   -H "database-id-hash: 35f5c5b139a6b569d4649b788c1851831eb44d8e32b716b8411ec6431af8121d" \
   http://localhost:3000/api/agent
 ```
 
-
-or - if you exported the `OPEN_AGENTS_BUILDER_API_KEY`: 
-
+Or, if you have exported the key as `OPEN_AGENTS_BUILDER_API_KEY`:
 
 ```bash
 curl -X GET -H "Authorization: Bearer $OPEN_AGENTS_BUILDER_API_KEY" \
@@ -41,82 +48,102 @@ curl -X GET -H "Authorization: Bearer $OPEN_AGENTS_BUILDER_API_KEY" \
   http://localhost:3000/api/agent
 ```
 
+### Understanding `database-id-hash`
 
-**Note**: You might noticed that the pretty unique `database-id-hash` header is always set with all new requests. This header is the database identifier - unique as per user account. It always will be the same for all your API Requests within single OAB database/owner account.
+You’ll notice the `database-id-hash` header in each request. This header identifies your specific OAB database (unique per user account). It remains consistent across all API requests within a single OAB database or account.
 
-
-This request should return the following JSON array:
-
+If everything is set up correctly, the response should look like this:
 
 ```json
 [
     {
         "id": "zb18x8kjoilNo-vL99r9s",
         "displayName": "New from template: InstaFit - fitness shop for Instagram",
-        "options": "{\"welcomeMessage\":\"Hey! Welcome to my store with **ActiveWearPro** brand products! Check out our top products, ask for details, choose your size, and order!\",\"termsAndConditions\":\"\",\"mustConfirmTerms\":false,\"resultEmail\":\"\",\"collectUserEmail\":true,\"collectUserName\":true}",
-        "events": "{}",
-        "tools": "{\"tool-1740483491887\":{\"tool\":\"listProducts\",\"description\":\"\",\"options\":{}},\"tool-1740483500288\":{\"tool\":\"createOrderTool\",\"description\":\"\",\"options\":{}}}",
-        "prompt": "You are an assistant in an online store. You help customers choose and order products from our assortment. Answer all questions about the products. Show their photos. Show their variants and attributes. Let them choose variants.\n\nAt the start, proactively ask what the customer is interested in and show 3  products from the catalog with photos as a table: photo, product name, price, available variants. Always show products this way. In the alt text of product photos, provide \"product-{id}\" where {id} is the product number.\n\nManage a cart for the customer - collecting products they want to order.\n\nIf the customer changes their mind, save their cart as a sales opportunity rather than an order.\n\nIf the customer wants to place an order, save the order in the expected format.\n\nAs for payment methods, the customer will receive a link to pay for the order (sent manually by store staff) after placing the order.",
-        "flows": "null",
-        "published": null,
-        "defaultFlow": null,
-        "inputs": null,
-        "agents": "null",
-        "expectedResult": "The result is an order. Before placing the order, summarize the cart by listing the products, prices, quantities, and the total order value.\n\nIf the customer wants to place an order - ask the customer for all the necessary data for the order, which are:\n\nFirst and last name\n\nEmail\n\nDelivery address (city, postal code, street)\nInvoice address if different from the delivery address\n\nThe result should be an order in **markdown** format with a nice table of ordered goods and all the data needed to fulfill the order",
-        "safetyRules": "Do not let the customers to add zero-priced products to the cart. Do not let customers to order products out of catalog.",
-        "status": "active",
-        "locale": "en",
-        "agentType": "commerce-agent",
-        "createdAt": "2025-03-20T10:29:31.076Z",
-        "updatedAt": "2025-03-20T10:29:31.076Z",
-        "icon": null,
-        "extra": null
+        ...
     },
     {
         "id": "m8r22uvT2_KsMODoEw9ag",
         "displayName": "New from template: Import and invoice orders",
-        "options": "{\"welcomeMessage\":\"Welcome to the **Import and Invoice** orders agent. Upload a file with your order data or enter it manually, and we'll try to import it plus generate an invoice. You can call this agent as a convenient API import as well.\",\"termsAndConditions\":\"\",\"mustConfirmTerms\":false,\"resultEmail\":\"\",\"collectUserEmail\":false,\"collectUserName\":false}",
-        "events": "{}",
-        "tools": "{}",
-        "prompt": "",
-        "flows": "[{\"name\":\"Import order\",\"code\":\"import\",\"flow\":{\"type\":\"sequence\",\"steps\":[{\"type\":\"step\",\"agent\":\"Order agent\",\"input\":\"try to parse the input of @orderFile (if provided) to JSON \\nif it's not possible use the @seller @buyer and @items information to create the order\\nuse the tool to create the order in the database\\nreturn the order in JSON format\"},{\"type\":\"step\",\"agent\":\"Invoice agent\",\"input\":\"based on the order generated in the previous step please take the @Invoicedocumentdocx template and generate the document with the invoice\"}]},\"inputs\":[{\"name\":\"orderFile\",\"description\":\"order file - PDF, CSV, Excel, Word ...\",\"required\":false,\"type\":\"fileBase64\"},{\"name\":\"items\",\"description\":\"text including ordered items\",\"required\":false,\"type\":\"longText\"},{\"name\":\"seller\",\"description\":\"seller information including address\",\"required\":false,\"type\":\"shortText\"},{\"name\":\"buyer\",\"description\":\"buyer information\",\"required\":false,\"type\":\"shortText\"}]}]",
-        "published": null,
-        "defaultFlow": null,
-        "inputs": null,
-        "agents": "[{\"name\":\"Order agent\",\"model\":\"gpt-4o\",\"system\":\"You are a skilled order agent who can map imported order files or text information to existing products  (if exists) or create virtual line items in order to save the order into database. If some information is not provided try to fake it.\",\"tools\":[{\"name\":\"currentDate\",\"options\":{}},{\"name\":\"listProducts\",\"options\":{}},{\"name\":\"createOrderTool\",\"options\":{\"virtualProducts\":true}}]},{\"name\":\"Invoice agent\",\"model\":\"gpt-4o\",\"system\":\"You're invoice agent - based on the Invoice template document you're generating invoice based on the order data\",\"tools\":[{\"name\":\"listAttachments\",\"options\":{}},{\"name\":\"attachmentContent\",\"options\":{}}]}]",
-        "expectedResult": "",
-        "safetyRules": "",
-        "status": "active",
-        "locale": "en",
-        "agentType": "flow",
-        "createdAt": "2025-03-20T11:08:14.606Z",
-        "updatedAt": "2025-03-20T11:08:14.606Z",
-        "icon": null,
-        "extra": null
+        ...
     },
-    {
-        "id": "7Wq387dQ59f-x7p73dTcv",
-        "displayName": "New from template: InstaFit - fitness shop for Instagram",
-        "options": "{\"welcomeMessage\":\"Hey! Welcome to my store with **ActiveWearPro** brand products! Check out our top products, ask for details, choose your size, and order!\",\"termsAndConditions\":\"\",\"mustConfirmTerms\":false,\"resultEmail\":\"\",\"collectUserEmail\":true,\"collectUserName\":true}",
-        "events": "{}",
-        "tools": "{\"tool-1740483491887\":{\"tool\":\"listProducts\",\"description\":\"\",\"options\":{}},\"tool-1740483500288\":{\"tool\":\"createOrderTool\",\"description\":\"\",\"options\":{}}}",
-        "prompt": "You are an assistant in an online store. You help customers choose and order products from our assortment. Answer all questions about the products. Show their photos. Show their variants and attributes. Let them choose variants.\n\nAt the start, proactively ask what the customer is interested in and show 3  products from the catalog with photos as a table: photo, product name, price, available variants. Always show products this way. In the alt text of product photos, provide \"product-{id}\" where {id} is the product number.\n\nManage a cart for the customer - collecting products they want to order.\n\nIf the customer changes their mind, save their cart as a sales opportunity rather than an order.\n\nIf the customer wants to place an order, save the order in the expected format.\n\nAs for payment methods, the customer will receive a link to pay for the order (sent manually by store staff) after placing the order.",
-        "flows": "null",
-        "published": null,
-        "defaultFlow": null,
-        "inputs": null,
-        "agents": "null",
-        "expectedResult": "The result is an order. Before placing the order, summarize the cart by listing the products, prices, quantities, and the total order value.\n\nIf the customer wants to place an order - ask the customer for all the necessary data for the order, which are:\n\nFirst and last name\n\nEmail\n\nDelivery address (city, postal code, street)\nInvoice address if different from the delivery address\n\nThe result should be an order in **markdown** format with a nice table of ordered goods and all the data needed to fulfill the order",
-        "safetyRules": "Do not let the customers to add zero-priced products to the cart. Do not let customers to order products out of catalog.",
-        "status": "active",
-        "locale": "en",
-        "agentType": "commerce-agent",
-        "createdAt": "2025-03-20T12:05:45.591Z",
-        "updatedAt": "2025-03-20T12:05:45.591Z",
-        "icon": null,
-        "extra": null
-    }
+    ...
 ]
 ```
 
+This confirms that you can successfully retrieve your agents via the API.
 
+---
+
+## Using the Official TypeScript Client
+
+While you can continue using `curl` or other HTTP clients, the [**open-agents-builder-client**](https://github.com/CatchTheTornado/open-agents-builder-client) library streamlines many tasks, provides full TypeScript definitions, and offers a modular approach for all the key API endpoints.
+
+### 1. Installation
+
+```bash
+npm install open-agents-builder-client zod
+```
+or
+```bash
+yarn add open-agents-builder-client zod
+```
+
+### 2. Setup
+
+```ts
+import { OpenAgentsBuilderClient } from "open-agents-builder-client";
+
+const client = new OpenAgentsBuilderClient({
+  // This URL can be changed if you're self-hosting.
+  baseUrl: "https://app.openagentsbuilder.com", 
+  databaseIdHash: "YOUR_DATABASE_ID_HASH",
+  apiKey: "YOUR_API_KEY" // or set process.env.OPEN_AGENTS_BUILDER_API_KEY
+});
+```
+
+### 3. Example Usage
+
+#### Listing Agents
+```ts
+client.agent.listAgents()
+  .then((agents) => {
+    console.log("Agents:", agents);
+  })
+  .catch(console.error);
+```
+
+#### Upserting a Product
+```ts
+client.product.upsertProduct({
+  sku: "PROD-XYZ",
+  name: "Sample Product",
+  description: "A wonderful product"
+})
+.then((resp) => {
+  console.log("Product upserted:", resp);
+})
+.catch(console.error);
+```
+
+#### Uploading or Upserting an Attachment
+For small files or text attachments:
+```ts
+client.attachment.upsertAttachment({
+  storageKey: "unique-file-123",
+  displayName: "myfile.pdf",
+  mimeType: "application/pdf",
+  content: "Optional text content"
+})
+.then((resp) => console.log("Attachment upserted:", resp))
+.catch(console.error);
+```
+
+> **Note**: For larger binary files, you’d typically use a `multipart/form-data` approach. You can easily extend `attachmentApi` to handle these cases.
+
+---
+
+### Next Steps
+- **Check out the [Open Agents Builder Example](https://github.com/CatchTheTornado/open-agents-builder-example)** for a complete demo of how to integrate the client into a project.  
+- Explore additional endpoints like **Orders, Calendar, Results**, and more to fit your use case.
+
+That’s it! You’re now set to develop against Open Agents Builder with a robust, typed client—or you can continue using your preferred HTTP client if that’s more convenient.

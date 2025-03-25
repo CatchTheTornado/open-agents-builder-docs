@@ -6,7 +6,7 @@ order: 20
 
 The main concept of Open Agents Builder and it's architecture circles around the  `Agent` entity. You may create many different agents, each of different type and in charge of different Business Case.
 
-Agents can be [created from templates or as just plain projects](./4-creating-first-agent.md).
+Agents can be [created from templates or as just plain projects](../4-creating-first-agent.md).
 
 <Image src="../../../assets/overall-view.png" />
 

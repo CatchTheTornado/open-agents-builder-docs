@@ -23,7 +23,7 @@ The **Stats** API helps you **record** usage data (like prompt/completion tokens
 
 **Key Capabilities**:
 
-1. **Add** or **update** a stats record (via a “PUT” that aggregates tokens by hour/day/month).  
+1. **Add** or **update** a stats record (via a “PUT” that aggregates tokens by hour/day/month).
 2. **Fetch aggregated** usage stats for the current month, last month, and today.
 
 ---
@@ -182,6 +182,28 @@ putStats({
 
 *(The server might have aggregated it with an existing row, incrementing `counter` to 2.)*
 
+#### Using the TypeScript API Client
+
+```ts
+import { OpenAgentsBuilderClient } from "open-agents-builder-client";
+
+const client = new OpenAgentsBuilderClient({
+  apiKey: "YOUR_API_KEY",
+  databaseIdHash: "YOUR_DATABASE_ID_HASH"
+});
+
+async function putStatsClientExample() {
+  await client.stats.putStats({
+    eventName: "chat",
+    promptTokens: 100,
+    completionTokens: 150
+  });
+  console.log("Stats aggregated via client!");
+}
+
+putStatsClientExample();
+```
+
 ---
 
 ### 3.2 `GET /api/stats/aggregated`
@@ -260,6 +282,17 @@ getAggregatedStats().catch(console.error);
 }
 ```
 
+#### Using the TypeScript API Client
+
+```ts
+async function getAggregatedStatsClientExample() {
+  const aggregated = await client.stats.getAggregatedStats();
+  console.log("Aggregated stats via client:", aggregated);
+}
+
+getAggregatedStatsClientExample();
+```
+
 ---
 
 ## 4. Internal Pricing Logic
@@ -293,9 +326,10 @@ Error responses generally include:
 
 ## 6. Summary of Stats Endpoints
 
-| **Endpoint**                       | **Method** | **Purpose**                                                                 |
-|-----------------------------------|-----------|-----------------------------------------------------------------------------|
-| **`/api/stats`**                  | **PUT**    | Aggregates usage stats (tokens, eventName). Automatically merges same hour.|
-| **`/api/stats/aggregated`**       | **GET**    | Returns an object with monthly + daily usage cost/tokens (thisMonth, lastMonth, today). |
+| **Endpoint**                       | **Method** | **Purpose**                                                                                                 |
+|-----------------------------------|-----------|-------------------------------------------------------------------------------------------------------------|
+| **`/api/stats`**                  | **PUT**    | Aggregates usage stats (tokens, eventName). Automatically merges same hour.                                |
+| **`/api/stats/aggregated`**       | **GET**    | Returns an object with monthly + daily usage cost/tokens (thisMonth, lastMonth, today).                     |
 
 You can expand the logic to add more time frames or advanced queries as needed. This approach focuses on **LLM usage** but can be adapted for other usage tracking.
+

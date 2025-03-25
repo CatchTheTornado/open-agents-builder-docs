@@ -4,44 +4,41 @@ description: Open Agents Builder concepts and architecture
 order: 20
 ---
 
-Our idea was to have OAB ready for building PoC's (Proof of Concept) or Production AI Agents for business - **at no time**.
+Our goal was to make OAB ready for building PoCs (Proof of Concept) or production AI agents for businesses **in no time**.
 
-This is the reason we decided to include some cool, typical business features inside the panel. The idea is that you can start your Agent ASAP - and when it works - integrate the internal data structres - via API - with your desired systems like your ERP, CRM and PIM.
+That’s why we decided to include a variety of typical business features right in the panel. You can start building your agent as soon as possible, and once it’s working, integrate your internal data structures—via API—into your chosen ERP, CRM, or PIM.
 
-The second **thesiss we had** is that **AI is lacking UI** and the Chat interface - as it might be usefull for the End Users - it's rarely **enough for business stakeholders** especially for numeric entties like Orders or some more complex - though standard - structures.
+A second principle guiding us is that **AI often lacks a suitable user interface**. While a chat interface might be useful for end users, it’s often insufficient for business stakeholders who need to work with numeric entities such as orders, or with more complex (though standard) data structures. It’s also convenient to have basic tooling—for example, an order system that calculates rather than guesses proper tax values.
 
-It's also covenient to have the basic tooling - like creating order which is calculating rather than guessing - proper tax values etc. 
+**All these features and heuristics are included intentionally to help businesses make the most of AI in a way that aligns with real-world operations.**
 
-**All these heuristics are included on purpose to make making most of the AI for the Business the way Business works.**
+## Business Features Included
 
+You may have noticed that with an OAB account, you get not only an AI Agents IDE but also:
 
-## Business features included
+- **Products and Services** – A simple PIM where you can define products, including support for multiple currencies, variants, AI-generated descriptions, and more.
 
-You may noticed that with the OAB account you're getting not only the AI Agents IDE but also:
+  <Image src="../../../assets/screenshot-oab-4.png" />
 
-- `Products and Services` - which is a simple PIM where you can define products including support for currencies, variants, AI generated descriptions etc.
+- **Orders** – A useful order management system that AI can operate on.
+- **Calendar** – A basic scheduler and calendar service (with Gmail and Outlook integrations coming soon) that agents can use to check available time slots or book events.
 
-<Image src="../../../assets/screenshot-oab-4.png" />
+  <Image src="../../../assets/calendar.png" />
 
-- `Orders` - which is a pretty usefull Order Management System - AI can operate upon,
-- `Calendar` - which is basic Scheduler and Calendar service (GMail and Outlook integrations comming soon) - Agents can check the available time slots or book events,
+- **Attachments** – An area where you can upload files (PDF, Word, Excel, PowerPoint, text, JSON, ZIP, etc.) to be automatically converted into Markdown and made accessible to AI agents.
 
-<Image src="../../../assets/calendar.png" />
+## Enterprise-Grade Features Included
 
-- `Attachments` - where you can upload any files in: PDF, Word, Excel, Powerpoint, text, json, ZIP (including all above mentioned formats) files - and have them automatically processed to `markdown` and accesible to the AI Agents.
+In addition to standard business features, OAB also offers several enterprise-level capabilities:
 
-## Enterprise grade features included
+- **GDPR Compliance** – All user data gathered by your agents is encrypted with individual encryption keys, and we generate audit logs (accessible from the admin panel).
+- **Data Encryption** – SSL is supported, and data is encrypted both at rest and in transit.
+- **Sharing** – You can create shared keys that allow other team members to collaborate on agents and the data collected.
+  
+  <Image src="../../../assets/shared-keys.png" />
 
-More than business features - OAB includes some Enterprise features as well, including:
+- **Audit Logs** – Easily track who accessed or modified your data and when.
+  
+  <Image src="../../../assets/audit.png" />
 
-- **GDPR ready** - we're encrypting all the user data gathered by You in the app using individual encryption keys, we're doing audit logs (accessible from the admin panel as well),
-- **Data Encryption** - SSL supported, data is encrypted on storage and in transit,
-- **Sharing** - you may create  the Shared Keys for other employees to work together on the agents and the data gathered,
-
-<Image src="../../../assets/shared-keys.png" />
-
-- **Audit logs** - check who and when had access to your data or modify it
-
-<Image src="../../../assets/audit.png" />
-
-- **Export/import** - features for all the entities like `Products`, `Orders`, `Agents`, `Results`, `Attachments` etc. You own your own data and can export it any time with all the uploaded files etc.
+- **Export/Import** – Apply these features to all entities, such as `Products`, `Orders`, `Agents`, `Results`, and `Attachments`. You own your data and can export it at any time, including all uploaded files.

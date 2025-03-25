@@ -3,11 +3,13 @@ title: Product Management API
 description: How to create, delete and filter products thru API
 ---
 
-Below is a **comprehensive REST API documentation** for managing **Products** in your **commerce** schema. Examples use the base URL **`https://app.openagentsbuilder.com`** and show both **cURL** and **TypeScript (fetch)** usage.  
+Below is a **comprehensive REST API documentation** for managing **Products** in your **commerce** schema. Examples use the base URL **`https://app.openagentsbuilder.com`** and show both **cURL** and **TypeScript (fetch)** usage.
 
 ---
 
-> **Note**: There is an API client plus example available on: [https://github.com/CatchTheTornado/open-agents-builder-client](https://github.com/CatchTheTornado/open-agents-builder-client) and [https://github.com/CatchTheTornado/open-agents-builder-example](https://github.com/CatchTheTornado/open-agents-builder-example)
+> **Note**: There is an API client plus example available at:
+> - [open-agents-builder-client](https://github.com/CatchTheTornado/open-agents-builder-client)
+> - [open-agents-builder-example](https://github.com/CatchTheTornado/open-agents-builder-example)
 
 ---
 
@@ -86,7 +88,6 @@ export type ProductDTO = z.infer<typeof productDTOSchema>;
 ### 3.1 `GET /api/product`
 
 #### 3.1.1 Description
-
 Returns a **paginated** list of products, including support for partial text queries, sorting, etc.
 
 #### 3.1.2 Query Parameters
@@ -95,7 +96,7 @@ Returns a **paginated** list of products, including support for partial text que
 - **`offset`** (default `0`) – how many records to skip.  
 - **`orderBy`** – defaults to `"createdAt"`. You can specify `"name"`, `"price"`, etc.  
 - **`query`** – partial match on the product’s `sku` or `name`.  
-- **`id`** – fetch a single product by `id`.  
+- **`id`** – fetch a single product by `id`.
 
 #### 3.1.3 cURL Example
 
@@ -136,6 +137,32 @@ async function getProducts() {
   console.log("Products result:", data);
   return data;
 }
+```
+
+#### Using the TypeScript API Client
+
+You can also fetch products using the **open-agents-builder-client**:
+
+```ts
+import { OpenAgentsBuilderClient } from "open-agents-builder-client";
+
+const client = new OpenAgentsBuilderClient({
+  apiKey: "YOUR_API_KEY",
+  databaseIdHash: "YOUR_DATABASE_ID_HASH"
+});
+
+async function listProductsClientExample() {
+  // The client.product.listProducts() method accepts optional query parameters.
+  const products = await client.product.listProducts({
+    limit: 5,
+    offset: 0,
+    orderBy: "name",
+    query: "shoes"
+  });
+  console.log("Products from client:", products);
+}
+
+listProductsClientExample();
 ```
 
 #### 3.1.5 Example Response (HTTP 200)
@@ -259,6 +286,32 @@ upsertProduct({
 }).catch(console.error);
 ```
 
+#### Using the TypeScript API Client
+
+```ts
+import { OpenAgentsBuilderClient } from "open-agents-builder-client";
+
+const client = new OpenAgentsBuilderClient({
+  apiKey: "YOUR_API_KEY",
+  databaseIdHash: "YOUR_DATABASE_ID_HASH"
+});
+
+async function upsertProductClientExample() {
+  const result = await client.product.upsertProduct({
+    id: "p-abc123",
+    sku: "SHOE-001",
+    name: "Nice Shoes",
+    price: { value: 49.99, currency: "USD" },
+    taxRate: 0.23,
+    brand: "Some Brand",
+    status: "active"
+  });
+  console.log("Upserted product via client:", result);
+}
+
+upsertProductClientExample();
+```
+
 #### 3.2.5 Example Success Response
 
 ```json
@@ -329,6 +382,24 @@ async function deleteProduct(productId: string) {
 deleteProduct("p-abc123").catch(console.error);
 ```
 
+#### Using the TypeScript API Client
+
+```ts
+import { OpenAgentsBuilderClient } from "open-agents-builder-client";
+
+const client = new OpenAgentsBuilderClient({
+  apiKey: "YOUR_API_KEY",
+  databaseIdHash: "YOUR_DATABASE_ID_HASH"
+});
+
+async function deleteProductClientExample() {
+  const response = await client.product.deleteProduct("p-abc123");
+  console.log("Delete product via client:", response);
+}
+
+deleteProductClientExample();
+```
+
 #### 3.3.4 Example Response (HTTP 200)
 
 ```json
@@ -354,7 +425,7 @@ If not found, returns a 400 with:
 - `index.md` and `index.html` – listing products.  
 - For each product, a `*.md` and `*.html` – rendered from `renderProductToMarkdown()`.  
 - `images` folder – any product images referenced in `product.images` are embedded in the ZIP.  
-- `products.json` – raw JSON of all products.  
+- `products.json` – raw JSON of all products.
 
 #### 3.4.2 cURL Example
 
@@ -369,6 +440,44 @@ curl -X GET \
 #### 3.4.3 Usage
 
 - You’ll receive a **binary ZIP** file. The server sets `Content-Type: application/zip`.
+
+#### Using the TypeScript API Client
+
+> The default `client.product` in **open-agents-builder-client** does not include a built-in `export` method. You can extend it similarly to other modules.
+
+**Example**:
+
+```ts
+import { BaseClient } from "open-agents-builder-client";
+
+class ExtendedProductApi extends BaseClient {
+  public async exportProducts(): Promise<Blob> {
+    const url = `${this.baseUrl}/api/product/export`;
+    const resp = await fetch(url, {
+      method: "GET",
+      headers: {
+        "Authorization": `Bearer ${this.apiKey}`,
+        "database-id-hash": this.databaseIdHash
+      }
+    });
+    if (!resp.ok) {
+      throw new Error(`Error exporting products: ${resp.statusText}`);
+    }
+    return resp.blob();
+  }
+}
+
+// Usage
+(async () => {
+  const extendedProductApi = new ExtendedProductApi({
+    apiKey: "YOUR_API_KEY",
+    databaseIdHash: "YOUR_DATABASE_ID_HASH"
+  });
+
+  const zipBlob = await extendedProductApi.exportProducts();
+  console.log("Exported Products as ZIP Blob:", zipBlob);
+})();
+```
 
 ---
 
@@ -430,6 +539,52 @@ describeProductWithImage("unique-image-storage-key", {
 }).catch(console.error);
 ```
 
+#### Using the TypeScript API Client
+
+By default, **open-agents-builder-client** does **not** include a specialized method for `POST /api/product/descriptor/[storageKey]`. You can:
+
+1. Extend `ProductApi` similarly to the export method above.
+2. Or simply use `fetch` or `axios` for this route.
+
+**Example** extension:
+
+```ts
+class ExtendedProductApi extends BaseClient {
+  public async describeProduct(storageKey: string, productData: Partial<ProductDTO>) {
+    const url = `${this.baseUrl}/api/product/descriptor/${storageKey}`;
+    const resp = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${this.apiKey}`,
+        "database-id-hash": this.databaseIdHash,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(productData)
+    });
+    if (!resp.ok) {
+      throw new Error(`Error describing product: ${resp.statusText}`);
+    }
+    return resp.json();
+  }
+}
+
+// Usage:
+(async () => {
+  const extendedProductApi = new ExtendedProductApi({
+    apiKey: "YOUR_API_KEY",
+    databaseIdHash: "YOUR_DATABASE_ID_HASH"
+  });
+
+  const result = await extendedProductApi.describeProduct("unique-image-storage-key", {
+    sku: "DES-123",
+    name: "From LLM",
+    price: { value: 19.99, currency: "USD" }
+  });
+
+  console.log("LLM-based described product:", result);
+})();
+```
+
 #### 3.5.4 Example Response (HTTP 200)
 
 Returns a validated `ProductDTO` or partial structure the LLM generated (like a refined `description`, `attributes`, etc.).  
@@ -488,6 +643,8 @@ async function fetchProductImage(databaseIdHash: string, storageKey: string) {
 }
 ```
 
+> The client library does not have a dedicated method for retrieving product images from storage. You can add your own extension if needed.
+
 ---
 
 ## 4. Error Handling
@@ -516,7 +673,7 @@ Each error typically includes a JSON object:
 | **Endpoint**                                                        | **Method** | **Purpose**                                                                                                                      |
 |---------------------------------------------------------------------|-----------|----------------------------------------------------------------------------------------------------------------------------------|
 | **`/api/product?limit=&offset=&orderBy=...&query=...`**            | **GET**    | List/search products with pagination, sorting, partial query, etc.                                                               |
-| **`/api/product`**                                                 | **PUT**    | Upsert (create/update) a product.                                                                                                 |
+| **`/api/product`**                                                 | **PUT**    | Upsert (create/update) a product.                                                                                                |
 | **`/api/product/[id]`**                                            | **DELETE** | Delete a product by ID.                                                                                                          |
 | **`/api/product/export`**                                          | **GET**    | Export all products into a ZIP (including `index.md/html`, product `*.md/html`, `images/`, and a `products.json` file).          |
 | **`/api/product/descriptor/[storageKey]`**                         | **POST**   | Generate/describe a product using an LLM, providing an image (from `[storageKey]`) and a `ProductDTO` in JSON body.              |

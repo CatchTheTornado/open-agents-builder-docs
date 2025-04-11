@@ -11,7 +11,7 @@ Most of Open Agents Builder's features are accessible via a REST API.
 
 ## Getting Your API Key
 
-1. [Create your first agent](../guides/4-creating-first-agent).  
+1. [Create your first agent](/guides/4-creating-first-agent).  
 2. Navigate to the `/api` tab to generate a new API key.
 
 <Image src="../../../assets/api-keys.png" />

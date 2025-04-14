@@ -33,6 +33,10 @@ export default defineConfig({
 					autogenerate: { directory: 'guides' }
 				},
 				{
+					label: 'Tutorials',
+					autogenerate: { directory: 'tutorials' }
+				},
+				{
 					label: 'API Docs',
 					autogenerate: { directory: 'api' },
 				},

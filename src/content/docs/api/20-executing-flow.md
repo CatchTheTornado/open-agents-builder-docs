@@ -89,7 +89,7 @@ curl -X POST \
   -H "database-id-hash: 35f5c5b139a6b569d4649b788c1851831eb44d8e32b716b8411ec6431af8121d" \
   -H "Content-Type: application/json" \
   -d '{"flow":"import","execMode":"sync","outputMode":"stream"}' \
-  http://localhost:3000/api/agent/m8r22uvT2_KsMODoEw9ag/exec
+  https://app.openagentsbuilder.com/api/agent/m8r22uvT2_KsMODoEw9ag/exec
 ```
 
 > **Note**: The `database-id-hash` is unique per database/data owner. Find it under **Admin > API**.  

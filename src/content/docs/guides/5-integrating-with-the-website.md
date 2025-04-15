@@ -16,8 +16,8 @@ This guide shows you how to embed the Open Agents Builder chat widget on your we
 1. Go to the **API & Widgets** (or similarly named) section in the Open Agents Builder dashboard.  
 2. Copy the JavaScript snippet shown in the **Website Widget** section, for example:
    ```html
-   <script src="http://localhost:3000/chat-widget.js" 
-           data-chat-url="http://localhost:3000/chat/524a624e60b83b6c2f1f63970c48aee0c2b83b33827fd4129f85a37e9e55?nc6pRLWFFlV_yMXGCNnf5">
+   <script src="https://app.openagentsbuilder.com/chat-widget.js" 
+           data-chat-url="https://app.openagentsbuilder.com/chat/524a624e60b83b6c2f1f63970c48aee0c2b83b33827fd4129f85a37e9e55?nc6pRLWFFlV_yMXGCNnf5">
    </script>
    ```
    > The `localhost:3000` addresses are just placeholders — in your case, they might point to a different server/host.  
@@ -33,8 +33,8 @@ This guide shows you how to embed the Open Agents Builder chat widget on your we
    ...
    <!-- Other content on your site -->
 
-   <script src="http://your-domain.com/chat-widget.js" 
-           data-chat-url="http://your-domain.com/chat/XXXXXXXXXXXXXXXXXXXXXXXXXXXXX">
+   <script src="https://app.openagentsbuilder.com/chat-widget.js" 
+           data-chat-url="https://app.openagentsbuilder.com/chat/XXXXXXXXXXXXXXXXXXXXXXXXXXXXX">
    </script>
    </body>
    </html>
@@ -59,7 +59,7 @@ To take advantage of advanced features, you can also configure API access for yo
    curl -X GET \
      -H "Authorization: Bearer ${OPEN_AGENTS_BUILDER_API_KEY}" \
      -H "x-database-hash: 524a624e60b83b6c2f1f63970c48aee0c2b83b33827fd4129f85a37e9e55" \
-     http://localhost:3000/api/agent
+     https://app.openagentsbuilder.com/api/agent
    ```
    > `x-database-hash` identifies the relevant database/instance within the service.
 

@@ -37,7 +37,7 @@ To verify that the API works, run:
 ```bash
 curl -X GET -H "Authorization: Bearer ad_key_eyJhbGciOiJIUzI1NiJ9.eyJkYXRhYmFzZUlkSGFzaCI6IjM1ZjVjNWIxMzlhN..." \
   -H "database-id-hash: 35f5c5b139a6b569d4649b788c1851831eb44d8e32b716b8411ec6431af8121d" \
-  http://localhost:3000/api/agent
+  https://app.openagentsbuilder.com/api/agent
 ```
 
 Or, if you have exported the key as `OPEN_AGENTS_BUILDER_API_KEY`:
@@ -45,7 +45,7 @@ Or, if you have exported the key as `OPEN_AGENTS_BUILDER_API_KEY`:
 ```bash
 curl -X GET -H "Authorization: Bearer $OPEN_AGENTS_BUILDER_API_KEY" \
   -H "database-id-hash: 35f5c5b139a6b569d4649b788c1851831eb44d8e32b716b8411ec6431af8121d" \
-  http://localhost:3000/api/agent
+  https://app.openagentsbuilder.com/api/agent
 ```
 
 ### Understanding `database-id-hash`

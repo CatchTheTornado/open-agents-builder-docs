@@ -4,6 +4,8 @@ description: Creating e-Commerce agent in 3 minutes
 order: 20
 ---
 
+In this tutorial, I walk you through the process of creating an e-commerce agent using Open Agents Builder. I demonstrate how to set up a template, interact with a product catalog, and make an order seamlessly. I also highlight the integration capabilities with e-commerce platforms and the automatic generation of product variants and descriptions. Please make sure to create your free account at openagentsbuilder.com to follow along!
+
 <iframe width="560" height="315" src="https://www.youtube.com/embed/FkfTdRx6M9E?si=kuv1mAS5CAWBtgXO" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 

@@ -8,7 +8,7 @@ After signing up for a [free demo account](https://openagentsbuilder.com) or [de
 
 <Image src="../../../assets/templates.png" />
 
-This is a convenient way to get started. The six basic templates cover most of the [supported agent types](/2-concepts):
+This is a convenient way to get started. The six basic templates cover most of the [supported agent types](/guides/2-concepts):
 
 - **Bella Styles – Hairdresser Bookings**  
   A general-purpose booking AI chat. You could, for instance, place its link on your website so end users can schedule appointments or services. This bot uses the `Calendar` module, so all bookings are checked against your schedule in the internal `Calendar` to prevent overbooking.

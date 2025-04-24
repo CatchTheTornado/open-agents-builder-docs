@@ -8,6 +8,8 @@ order: 20
 
 This walk‑through shows you how to recreate the classic *doodle.com* “find the best time to meet” experience as your own AI agent.
 
+<iframe width="560" height="315" src="https://www.youtube.com/embed/0QoghfO_y40?si=OXVS8OIZbqZHjT08" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
 ---
 ### 1. Prerequisites
 * An **Open Agents Builder** account – sign up at *openagentsbuilder.com* if you don’t have one.

@@ -104,3 +104,13 @@ As you may have noticed, Open Agents Builder requires almost no external depende
 This approach provides minimal dependencies and enhanced security (each SQLite file is encrypted and isolated, which is beneficial for multi-tenant setups).
 
 Porting Open Agents Builder to another database (e.g., Postgres) shouldn’t require major effort. All data operations are done via [`Drizzle`](https://orm.drizzle.team/) and follow a Repository design pattern.
+
+## Note on database
+
+You might be surprised that there are no other dependencies, but by default, the app uses an SQLite database. The database files are stored in the `/data/{databaseIdHash}/` folder. These files can be accessed and read using third-party SQLite managers such as:
+
+- [DB Browser for SQLite](https://sqlitebrowser.org/)
+- [SQLiteStudio](https://sqlitestudio.pl/)
+- [TablePlus](https://tableplus.com/)
+
+This makes it easy to inspect or manage the database if needed.

@@ -11,6 +11,9 @@ This guide shows you how to embed the Open Agents Builder chat widget on your we
 1. **Verified Open Agents Builder account** (make sure you have an active account and a verified email address).
 2. **Access to your website’s source files** (to paste the code snippet).
 
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/biB4wVSRlKE?si=M7b68qaypfB7ybfZ" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
 ## Step 1: Obtain the widget code
 
 1. Go to the **API & Widgets** (or similarly named) section in the Open Agents Builder dashboard.  

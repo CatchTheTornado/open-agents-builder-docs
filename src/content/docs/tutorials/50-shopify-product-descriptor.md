@@ -14,6 +14,8 @@ A **Workflow (API) agent** that:
 
 The whole process takes 5–10 minutes and zero custom code.
 
+<iframe width="560" height="315" src="https://www.youtube.com/embed/bYA-BXEvyrA?si=HD4jVBOgFfBw-bQa" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
 ---
 
 ### 1.  Create the Workflow agent
@@ -31,6 +33,9 @@ The whole process takes 5–10 minutes and zero custom code.
 > • run in a lightweight UI you can share with anyone, **or**  
 > • call from any backend over HTTPS.
 
+<Image alt="" src="../../../assets/tutorials/26.png" />
+
+
 ---
 
 ###. 2  Add a sub-agent that “understands” images
@@ -44,6 +49,9 @@ The whole process takes 5–10 minutes and zero custom code.
 You're great at extracting the features of a product from a picture
 and generating structured descriptions.
 ```
+
+<Image alt="" src="../../../assets/tutorials/27.png" />
+
 
 5. **Save**.
 
@@ -73,6 +81,9 @@ _No extra tools are needed here because the only job is to convert an image into
 
 That single input is all the UI the end-user will see.
 
+<Image alt="" src="../../../assets/tutorials/28.png" />
+
+
 #### 3.3.  Build the sequence (one simple step)
 
 1. In **Sequence** click **Add step**.  
@@ -100,6 +111,9 @@ https://your-development-store.myshopify.com/admin/api/2025-04/graphql.json \
 
 4. **Save** the flow and then the agent.
 
+<Image alt="" src="../../../assets/tutorials/29.png" />
+
+
 ---
 
 ### 4.  Test in the built-in debugger
@@ -112,6 +126,9 @@ The **Trace** panel shows each step:
 * `sequenceAgent` → `Photo descriptor` (generation)  
 The final message contains your product description and a ready-made **curl** command with the correct title and option values.
 
+<Image alt="" src="../../../assets/tutorials/30.png" />
+
+
 ---
 
 ### 5.  Share or integrate
@@ -121,6 +138,9 @@ The final message contains your product description and a ready-made **curl** co
 * Go to **Run & Share** → **Share the flow link**.  
 * Copy the unique URL and hand it to anyone.  
 * They’ll see a minimal form (one file-picker) and the same result screen – no login needed.
+
+<Image alt="" src="../../../assets/tutorials/31.png" />
+
 
 #### 5.2.  Call from your backend
 
@@ -134,6 +154,10 @@ At the bottom of **Run & Share** you’ll find **Run via API**.
   * **Output mode**:  
     * *Stream* (default) – chunks partial output for progress bars.  
     * *Buffer* – delivers the whole response in one piece.
+
+
+<Image alt="" src="../../../assets/tutorials/33.png" />
+
 
 Here’s an example synchronous streaming request (replace placeholders):
 

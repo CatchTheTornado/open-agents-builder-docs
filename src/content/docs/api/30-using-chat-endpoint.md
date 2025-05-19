@@ -2,26 +2,98 @@
 title: Using the Chat endpoint
 description: How to use the Chat endpoint along with your Vercel AI SDK app
 ---
-Below is a **step-by-step** tutorial on how to use the **Chat endpoint** in Open Agents Builder and integrate it with a **React** application using the [Vercel AI SDK](https://sdk.vercel.ai/docs/ai-sdk-ui/chatbot). We’ll cover:
 
-- What the Chat endpoint is and why it’s useful
-- Endpoint details and request/response format
-- How to integrate the Chat endpoint into a React app
-- Example code snippets (with a minimal context provider and chat component usage)
+Below is a **step‑by‑step** tutorial on how to use the **Chat endpoint** in Open Agents Builder (OAB) and integrate it with a **React** application that uses the [Vercel AI SDK](https://sdk.vercel.ai/docs/ai-sdk-ui/chatbot).
 
----
-
-## 1. **Why Use the Chat Endpoint?**
-
-A **Chat**-type flow in Open Agents Builder (OAB) is 100% compliant with the [Vercel AI SDK’s Chat interface](https://sdk.vercel.ai/docs/ai-sdk-ui/chatbot). This allows you to:
-
-- Use OAB as a **backend** for your chat flows and business rules.
-- Empower non-technical users to manage conversation logic, tools, or integrations.
-- Build a **customized** chat frontend (or integrate into an existing React app).
+> **🆕 New in `open‑agents‑builder‑client` v1.2.0**
+> You can now execute chats **directly via the TypeScript API client**—no need to hand‑roll `fetch` calls.
+> The client’s `ChatApi` exposes three convenience helpers:
+>
+> | Method                            | Description                                                                                                  |
+> | --------------------------------- | ------------------------------------------------------------------------------------------------------------ |
+> | `chat(messages, opts)`            | Returns the raw `fetch` `Response` so you can read the SSE stream yourself.                                  |
+> | `streamChat(messages, opts)`      | Async generator that yields decoded stream parts (`text`, `tool_call`, `file`, …).                           |
+> | `collectMessages(messages, opts)` | Awaits the whole stream and returns the **assembled assistant message** + the `sessionId` for the next turn. |
+>
+> Full examples live in the **example repo** under [`/app/client-chat`](https://github.com/CatchTheTornado/open-agents-builder-example/tree/main/app/client-chat).
 
 ---
 
-## 2. **Endpoint: `/api/chat/`**
+## 1. Why Use the Chat Endpoint?
+
+A **Chat**‑type flow in OAB is 100 % compatible with the [Vercel AI SDK Chat interface](https://sdk.vercel.ai/docs/ai-sdk-ui/chatbot). This lets you:
+
+* Offload conversation logic, tool calls and business rules to **OAB agents** (managed by non‑devs).
+* Keep frontend development simple—just a few hooks and a context provider.
+* Switch between **streaming** (token‑by‑token) or non‑streaming replies with a single flag.
+* Re‑use the same backend from serverless functions, cron jobs or test scripts via the typed API client.
+
+---
+
+## 2. Endpoint basics: `POST /api/chat/`
+
+… *unchanged—see original docs above.*
+
+*But if you adopt the API client you rarely touch these headers manually; they’re injected for you.*
+
+```ts
+import { OpenAgentsBuilderClient } from "open-agents-builder-client";
+
+const client = new OpenAgentsBuilderClient({
+  databaseIdHash: process.env.DB_HASH!,
+  apiKey: process.env.OAB_KEY!
+});
+
+const system = { role: "system", content: "You are a haiku bot." };
+const user   = { role: "user",   content: "Write one about summer" };
+
+const { messages, sessionId } = await client.chat.collectMessages(
+  [system, user],
+  { agentId: "AGENT_ID" }
+);
+
+console.log(messages.at(-1)?.content); // => the complete haiku
+```
+
+---
+
+## 3. Using the client in a React app
+
+The [**example project**](https://github.com/CatchTheTornado/open-agents-builder-example) shows two approaches:
+
+1. **Client‑side only** – call `useChat` with `api: "/api/chat"` plus custom headers (shown later in this page).
+2. **Hybrid** – call the typed client **from your route handler** (Edge / Node), stream chunks to the browser with the Vercel AI SDK’s `streamText()` helper, and keep secrets server‑side.
+
+Below we stick to the first approach but, instead of a raw `fetch`, we’ll show a *server action* wrapper that re‑uses the client.
+
+```tsx
+// app/action/send-message.ts
+"use server";
+import { cookies } from "next/headers";
+import { OpenAgentsBuilderClient } from "open-agents-builder-client";
+
+export async function sendMessage(messages: any[]) {
+  const client = new OpenAgentsBuilderClient({
+    databaseIdHash: cookies().get("db_hash")!.value,
+    apiKey: process.env.OAB_KEY!
+  });
+
+  return await client.chat.collectMessages(messages, {
+    agentId: cookies().get("agent_id")!.value,
+    sessionId: cookies().get("session_id")?.value // may be undefined on first turn
+  });
+}
+```
+
+Now the browser only calls `/action/send-message`, keeping the API key off the client.
+
+---
+
+## 4. Original Vercel AI SDK Flow (reference)
+
+The remainder of this file reproduces the **plain‐fetch** integration (context provider + `useChat`). If you prefer the typed client, replace the raw `fetch` with `client.chat.chat()` or `client.chat.streamChat()`.
+
+## 5. **Endpoint: `/api/chat/`**
 
 **Method:** `POST`
 
@@ -60,7 +132,7 @@ Supply your **API key** via the `Authorization` header (if using the standard ap
 
 ---
 
-## 3. **Response**
+## 6. **Response**
 
 The response is typically **streamed**. That means your HTTP connection remains open, and tokens (fragments of the assistant’s reply) are sent in real time.
 
@@ -89,14 +161,14 @@ The response is typically **streamed**. That means your HTTP connection remains 
 
 ---
 
-## 4. **Example React Integration with Vercel AI SDK**
+## 7. **Example React Integration with Vercel AI SDK**
 
 Below is an **illustrative** example of how you might integrate the `/api/chat` endpoint into a React app. It uses:
 
 - A **context** (`ExecProvider`) to store session, agent, and database config.
 - A snippet of logic that calls `useChat` from `"ai/react"` to manage the conversation state.
 
-### 4.1 **Context Provider**
+### 7.1 **Context Provider**
 
 Create a context file (e.g., `@/context/exec-context.tsx`) to handle:
 
@@ -197,7 +269,7 @@ export const useExecContext = () => {
 };
 ```
 
-### 4.2 **Chat Page Component**
+### 7.2 **Chat Page Component**
 
 A basic example hooking into the context, using `useChat` from `ai/react`, and sending chat messages to `/api/chat`. You can adapt this to your UI library or layout.
 
@@ -306,7 +378,7 @@ export default function ChatPage({
 }
 ```
 
-### 4.3 **Putting It All Together**
+### 7.3 **Putting It All Together**
 
 In your root or page layout, wrap your `ChatPage` with the `ExecProvider`, so the context is available:
 
@@ -323,10 +395,11 @@ export default function App({ params }) {
 }
 ```
 
----
+## 8. Summary
 
-## 5. **Summary**
-
+- **New feature** – Execute chats via the **typed API client**; it auto‑handles headers, sessions and streaming.
+- **Three helpers** – `chat`, `streamChat`, `collectMessages` cover raw, generator and fire‑and‑forget use‑cases.
+- **Examples** – Check the example repo for both *direct fetch* and *client‑powered* React integrations.
 - **Endpoint**: Use `POST /api/chat` with the required headers (`Database-Id-Hash`, `Agent-Id`, etc.) to send messages.
 - **Streaming**: The LLM responses come as a stream of tokens by default, suitable for building real-time chat UIs.
 - **Vercel AI SDK**: Provides a `useChat` hook that works seamlessly with OAB’s Chat endpoint.

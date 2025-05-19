@@ -1,32 +1,37 @@
 ---
 title: Working with the API Client
-description: A fully-typed TypeScript client for Open Agents Builder
+description: A fully‑typed TypeScript client for Open Agents Builder
 order: 30
 ---
 
 **Note**: For a complete example project using this client, see the [Open Agents Builder Example](https://github.com/CatchTheTornado/open-agents-builder-example).
 
-The **open-agents-builder-client** is a TypeScript client for the [Open Agents Builder](https://www.openagentsbuilder.com/) APIs. It provides modular classes for agents, keys, attachments, stats, audits, sessions, results, calendars, products, and orders. The library relies on **Zod** for type validation, allowing you to confidently work with the responses and requests.
+The **open‑agents‑builder‑client** is a TypeScript client for the [Open Agents Builder](https://www.openagentsbuilder.com/) APIs. It provides fully‑typed, modular access to every public endpoint—agents, keys, attachments, stats, audits, sessions, results, calendars, products, orders, **memory**, and **chat**. All request/response payloads are validated with **Zod**, so you get rock‑solid type‑safety and early runtime validation.
 
 ## Key Features
 
-- **Typed Data Transfer Objects (DTOs)** via Zod schemas  
-- **Modular** approach: `client.agent`, `client.keys`, `client.attachment`, etc.  
-- **Automatic** setup of request headers:
-  - `Authorization: Bearer <API_KEY>`
-  - `database-id-hash`
-- **Multiple endpoints** supported:
-  - `Agent`: `/api/agent`
-  - `Keys`: `/api/keys`
-  - `Attachments`: `/api/attachment`
-  - `Stats` & `Audit` logs: `/api/stats`, `/api/audit`
-  - `Results` & `Sessions`: `/api/result`, `/api/session`
-  - `Calendar` Events: `/api/calendar`
-  - `Products` & `Orders`: `/api/product`, `/api/order`
-- **Configurable**:
-  - Base URL (`baseUrl`)
-  - Database ID Hash (`databaseIdHash`)
-  - API Key (`apiKey`)
+* **Typed Data Transfer Objects (DTOs)** via Zod schemas
+* **Modular** approach: `client.agent`, `client.keys`, `client.attachment`, `client.memory`, `client.chat`, etc.
+* **Automatic** request headers:
+
+  * `Authorization: Bearer <API_KEY>`
+  * `Database‑Id‑Hash` (multi‑tenant isolation)
+* **Wide endpoint coverage**:
+
+  * `Agent` → `/api/agent`
+  * `Keys` → `/api/keys`
+  * `Attachments` → `/api/attachment`
+  * `Stats` → `/api/stats`
+  * `Audit` → `/api/audit`
+  * `Results` → `/api/result`
+  * `Sessions` → `/api/session`
+  * `Calendar` → `/api/calendar`
+  * `Products` → `/api/product`
+  * `Orders` → `/api/order`
+  * **Vector‑store Memory** → `/api/memory/*`
+  * **Chat** → `/api/chat` (SSE streaming)
+* **Configurable** base URL, database hash and API key
+* **Built‑in streaming helpers** for chat—yielding reasoning, tool calls, files, etc.
 
 ---
 
@@ -50,40 +55,54 @@ yarn add open-agents-builder-client zod
 import { OpenAgentsBuilderClient } from "open-agents-builder-client";
 
 const client = new OpenAgentsBuilderClient({
-  baseUrl: "https://app.openagentsbuilder.com", 
-  databaseIdHash: "YOUR_DATABASE_ID_HASH",
-  apiKey: "YOUR_API_KEY"
+  baseUrl: "https://app.openagentsbuilder.com", // optional – this is the default
+  databaseIdHash: "YOUR_DATABASE_ID_HASH",      // required
+  apiKey: "YOUR_API_KEY"                        // required
 });
 ```
 
-- `baseUrl` (optional): Defaults to `https://app.openagentsbuilder.com`
-- `databaseIdHash` (required): Uniquely identifies your OAB account
-- `apiKey` (required): The API key generated in OAB (not stored in the system after generation)
+`baseUrl` defaults to **`https://app.openagentsbuilder.com`**.
+`databaseIdHash` and `apiKey` come from your OAB dashboard.
 
 ---
 
 ## API Overview
 
-Below is a quick rundown of each resource. Each resource is encapsulated in its own class and exposed through the main `OpenAgentsBuilderClient`.
+Every top‑level resource is exposed as a property on the main client:
+
+| Property            | Class           | Purpose                        |
+| ------------------- | --------------- | ------------------------------ |
+| `client.agent`      | `AgentApi`      | CRUD Agents                    |
+| `client.keys`       | `KeysApi`       | Manage signing/encryption keys |
+| `client.attachment` | `AttachmentApi` | Upload / query attachments     |
+| `client.stats`      | `StatsApi`      | Usage metrics                  |
+| `client.audit`      | `AuditApi`      | Audit trail                    |
+| `client.result`     | `ResultApi`     | Persisted Agent outputs        |
+| `client.session`    | `SessionApi`    | Chat or flow sessions          |
+| `client.calendar`   | `CalendarApi`   | Calendar events                |
+| `client.product`    | `ProductApi`    | Products (PIM)                 |
+| `client.order`      | `OrderApi`      | Orders (OMS)                   |
+| `client.memory`     | `MemoryApi`     | Vector‑store memory            |
+| `client.chat`       | `ChatApi`       | Streaming chat with Agents     |
+
+Below you’ll find a quick reference for each module.
+
+---
 
 ### Agent
 
-All operations related to managing Agents:
-- **listAgents**: Retrieve all agents
-- **upsertAgent**: Create or update an agent
-- **deleteAgent**: Remove an agent by ID
-
-**Example**:
+* **`listAgents`** – fetch all agents
+* **`upsertAgent`** – create or update an agent
+* **`deleteAgent`** – remove an agent by ID
 
 ```ts
 // List Agents
 const agents = await client.agent.listAgents();
-console.log("Agents:", agents);
 
 // Upsert Agent
 await client.agent.upsertAgent({
-  displayName: "My New Agent",
-  prompt: "You are a helpful AI assistant..."
+  displayName: "My Helper Bot",
+  prompt: "You are a helpful AI assistant…"
 });
 
 // Delete Agent
@@ -94,277 +113,248 @@ await client.agent.deleteAgent("AGENT_ID");
 
 ### Keys
 
-Managing API keys:
-- **listKeys**: Retrieve a list of existing keys  
-- **upsertKey**: Create or update a key  
-- **deleteKey**: Remove a key by `keyLocatorHash`
-
-**Example**:
+* **`listKeys`**
+* **`upsertKey`**
+* **`deleteKey`**
 
 ```ts
-// List Keys
 const keys = await client.keys.listKeys();
-console.log("Keys:", keys);
-
-// Delete Key
-await client.keys.deleteKey("LOCATOR_HASH_OF_THE_KEY");
+await client.keys.deleteKey("KEY_LOCATOR_HASH");
 ```
 
-> **Note**: For low-level details on how keys are generated (e.g., how `keyHash` and `keyLocatorHash` are created), see the [Key Context](https://github.com/CatchTheTornado/open-agents-builder/blob/a5b5582d1bcb5de04baa53e26ef58086f4c5d436/src/contexts/key-context.tsx#L91) in the official repo.
+> **How keys are generated** – see the [Key Context source](https://github.com/CatchTheTornado/open-agents-builder/blob/a5b5582d1bcb5de04baa53e26ef58086f4c5d436/src/contexts/key-context.tsx#L91).
 
 ---
 
 ### Attachments
 
-Managing files uploaded to OAB:
-- **listAttachments**: Retrieve all attachments
-- **queryAttachments**: Filter attachments by query parameters
-- **upsertAttachment**: Create or update an attachment (e.g., for small or text-based files)
-- **deleteAttachment**: Remove an attachment by `storageKey`
-- **exportAttachments**: Export all attachments as a downloadable file
-
-**Example**:
+* **`listAttachments`**
+* **`queryAttachments`** (server‑side filtering/querying)
+* **`upsertAttachment`** – create/update small or text‑based files
+* **`deleteAttachment`**
+* **`exportAttachments`** – bulk export as a Blob
 
 ```ts
-// List Attachments
-const attachments = await client.attachment.listAttachments();
-
-// Upsert Attachment
 await client.attachment.upsertAttachment({
-  storageKey: "my-file-key",
-  displayName: "document.pdf",
+  storageKey: "doc.pdf",
+  displayName: "Project Spec",
   mimeType: "application/pdf",
-  content: "Text content or base64..."
+  content: "<base64‑encoded‑string>"
 });
-
-// Delete Attachment
-await client.attachment.deleteAttachment("my-file-key");
 ```
-
-> **Note**: For large binary files, you might need to extend the client to use `multipart/form-data`. See the [example project](https://github.com/CatchTheTornado/open-agents-builder-example) for details.
 
 ---
 
 ### Stats
 
-Recording or retrieving usage stats:
-- **putStats**: Create or update statistics
-- **getAggregatedStats**: Retrieve aggregated usage data (e.g., monthly or daily tokens used)
-
-**Example**:
+* **`putStats`** – record usage
+* **`getAggregatedStats`** – monthly / daily token usage, cost & request counts
 
 ```ts
-// Record Stats
 await client.stats.putStats({
-  eventName: "sampleEvent",
-  promptTokens: 50,
-  completionTokens: 20
+  eventName: "agent.run",
+  promptTokens: 130,
+  completionTokens: 42
 });
 
-// Get Aggregated Stats
 const { data } = await client.stats.getAggregatedStats();
-console.log("This month's usage:", data.thisMonth);
+console.log("Today’s usage:", data.today);
 ```
 
 ---
 
 ### Audit
 
-Logging and retrieving audit events:
-- **listAudit**: Retrieve audit records with optional query parameters
-- **createAuditLog**: Add a new entry to the audit log
-
-**Example**:
+* **`listAudit`**
+* **`createAuditLog`**
 
 ```ts
-// Create an Audit Log
 await client.audit.createAuditLog({
-  eventName: "updateProduct",
-  recordLocator: JSON.stringify({ productId: "1234" }),
-  diff: JSON.stringify({
-    old: { name: "Old Product" },
-    new: { name: "New Product" }
-  })
+  eventName: "priceUpdate",
+  diff: JSON.stringify({ old: 9.99, new: 12.99 })
 });
-
-// List Audit Logs
-const audits = await client.audit.listAudit();
 ```
 
 ---
 
 ### Result
 
-Storing and retrieving final outputs (`Result`s) from Agents or Sessions:
-- **listResults**: Retrieve results with optional filters
-- **deleteResult**: Remove a result by `sessionId`
-
-**Example**:
-
-```ts
-// List Results
-const results = await client.result.listResults();
-
-// Delete a specific result
-await client.result.deleteResult("SESSION_ID");
-```
+* **`listResults`**
+* **`deleteResult`**
 
 ---
 
 ### Session
 
-Storing and managing user sessions for chat or flows:
-- **listSessions**: Retrieve sessions with optional filters
-- **deleteSession**: Delete a session by `sessionId`
-
-**Example**:
-
-```ts
-// List Sessions
-const sessions = await client.session.listSessions({ agentId: "AGENT_ID" });
-
-// Delete Session
-await client.session.deleteSession("SESSION_ID");
-```
+* **`listSessions`**
+* **`deleteSession`**
 
 ---
 
 ### Calendar
 
-Managing events in the built-in calendar module:
-- **listEvents**: Fetch existing events
-- **upsertEvent**: Create or update an event
-- **deleteEvent**: Remove an event by its ID
-
-**Example**:
-
-```ts
-// List Events
-const events = await client.calendar.listEvents({ agentId: "AGENT_ID" });
-
-// Upsert Event
-await client.calendar.upsertEvent({
-  id: "event-123",
-  title: "Weekly Meeting",
-  agentId: "AGENT_ID",
-  start: "2025-03-21T10:00:00Z",
-  end: "2025-03-21T11:00:00Z"
-});
-```
+* **`listEvents`**
+* **`upsertEvent`**
+* **`deleteEvent`**
 
 ---
 
 ### Product
 
-Managing products in the built-in PIM:
-- **listProducts**: Retrieve all or filtered products
-- **upsertProduct**: Create or update a product with variants, images, pricing, etc.
-- **deleteProduct**: Remove a product by its ID
-
-**Example**:
-
-```ts
-// List Products
-const products = await client.product.listProducts();
-
-// Upsert Product
-await client.product.upsertProduct({
-  sku: "PROD-XYZ",
-  name: "New Product",
-  description: "An awesome product"
-});
-
-// Delete Product
-await client.product.deleteProduct("PRODUCT_ID");
-```
+* **`listProducts`**
+* **`upsertProduct`**
+* **`deleteProduct`**
 
 ---
 
 ### Order
 
-Managing orders in the built-in Order Management System (OMS):
-- **listOrders**: Retrieve all or filtered orders
-- **upsertOrder**: Create or update an order (e.g., from a cart session)
-- **deleteOrder**: Remove an order by its ID
+* **`listOrders`**
+* **`upsertOrder`**
+* **`deleteOrder`**
 
-**Example**:
+---
+
+### Memory  🧠
+
+Vector‑store operations for long‑term memory, RAG or embeddings:
+
+* **`createStore(name)`** – create an empty store
+* **`listStores({ limit, offset, query })`** – paginated listing & search
+* **`getStore(filename)`** – download entire store
+* **`deleteStore(filename)`** – remove a store
+* **`listRecords(filename, { embeddingSearch, topK })`** – filter/semantic search
+* **`createRecord(filename, record)`** – add an embedding & metadata
+* **`deleteRecord(filename, recordId)`**
+* **`generateEmbeddings(content)`** – call the backend’s embedding model
 
 ```ts
-// List Orders
-const orders = await client.order.listOrders({ status: "new" });
+// Create a store
+await client.memory.createStore("support‑kb");
 
-// Upsert Order
-await client.order.upsertOrder({
-  status: "new",
-  email: "customer@example.com",
-  items: [
-    {
-      id: "item-123",
-      productSku: "PROD-XYZ",
-      quantity: 2,
-      price: { value: 19.99, currency: "USD" },
-    }
-  ]
+// Add a record (after generating an embedding)
+const { embedding } = await client.memory.generateEmbeddings("How do I reset my password?");
+await client.memory.createRecord("support‑kb", {
+  id: crypto.randomUUID(),
+  content: "How do I reset my password?",
+  embedding,
+  metadata: { source: "FAQ" }
 });
+
+// Semantic search – top‑3 most similar
+const results = await client.memory.listRecords("support‑kb", {
+  embeddingSearch: "reset password forgotten",
+  topK: 3
+});
+```
+
+---
+
+### Chat  💬
+
+Low‑latency chat with an Agent. The backend streams **Server‑Sent Events (SSE)** using the Vercel AI protocol. The client ships three convenience helpers:
+
+| Method                            | What it does                                                                              |
+| --------------------------------- | ----------------------------------------------------------------------------------------- |
+| `chat(messages, opts)`            | Returns the raw `Response` so you can read the stream manually                            |
+| `streamChat(messages, opts)`      | Async generator yielding decoded chunks (`text`, `tool_call`, etc.)                       |
+| `collectMessages(messages, opts)` | Awaits the entire response, returns the full assembled assistant message & next sessionId |
+
+#### Minimal example (non‑streaming)
+
+```ts
+import { ChatMessage } from "open-agents-builder-client";
+
+const system: ChatMessage = { role: "system", content: "You are a poet." };
+const user:   ChatMessage = { role: "user",   content: "Write a haiku about spring." };
+
+const { messages: fullHistory } = await client.chat.collectMessages(
+  [system, user],
+  { agentId: "AGENT_ID" }
+);
+
+console.log(fullHistory[fullHistory.length - 1].content);
+```
+
+#### Streaming with async iteration
+
+```ts
+for await (const chunk of client.chat.streamChat([
+  { role: "user", content: "Stream me some wisdom" }
+], { agentId: "AGENT_ID" })) {
+  if (chunk.type === "text") process.stdout.write(chunk.content);
+}
+```
+
+#### Handling attachments
+
+If you supply a local file path in an attachment (`{ file: "./logo.png" }`) the helper automatically reads the file, infers MIME type (png, jpeg, pdf) and sends it as an in‑line `data:` URL—no extra work required.
+
+```ts
+await client.chat.collectMessages([
+  {
+    role: "user",
+    content: "What’s in this image?",
+    experimental_attachments: [
+      { file: "./parrot.png" }
+    ]
+  }
+], { agentId: "VISION_AGENT" });
 ```
 
 ---
 
 ## Extending the Client
 
-- **Zod Schemas**: Each API’s data is validated with Zod-based schemas (e.g., `agentDTOSchema`, `productDTOSchema`). You can use these or create custom schemas if you need additional fields.  
-- **Multipart File Uploads**: For large file uploads (e.g., PDFs or images), you may want to extend `AttachmentApi` to handle `multipart/form-data`.  
-- **New Endpoints**: You can add new modules or methods by extending the base `BaseClient` class and following a similar pattern for sending requests.
+* **Multipart uploads** – For very large binaries you may extend `AttachmentApi` to use `multipart/form-data` instead of base64.
+* **Custom schemas** – All DTO schemas are exported; compose or extend them with `z.intersection` or `z.extend`.
+* **New endpoints** – Derive a new class from `BaseClient` and add methods following the same `request()` convention.
 
 ---
 
 ## Putting It All Together
 
-Below is a simple example showing how you might combine multiple operations in one go:
-
 ```ts
-// 1. Initialize the client
+// 1 · Init
 const client = new OpenAgentsBuilderClient({
-  databaseIdHash: "YOUR_DATABASE_ID_HASH",
+  databaseIdHash: "YOUR_DB_HASH",
   apiKey: "YOUR_API_KEY"
 });
 
-// 2. Create an Agent
-const newAgent = await client.agent.upsertAgent({
-  displayName: "My Example Agent",
-  prompt: "You are a helpful agent..."
+// 2 · Create an Agent
+const agent = await client.agent.upsertAgent({
+  displayName: "Helper",
+  prompt: "You are very helpful"
 });
 
-// 3. Create a Product
-await client.product.upsertProduct({
-  sku: "SKU-123",
-  name: "Cool Gadget",
-  description: "A cool gadget for demonstration",
-  price: { value: 99.99, currency: "USD" }
+// 3 · Chat
+const history = [ { role: "user", content: "Hello" } ];
+const { messages, sessionId } = await client.chat.collectMessages(history, { agentId: agent.id! });
+console.log("Assistant says:", messages.at(-1)?.content);
+
+// 4 · Store the conversation in vector memory
+await client.memory.createStore("conversations");
+await client.memory.createRecord("conversations", {
+  id: sessionId!,
+  content: JSON.stringify(messages),
+  embedding: (await client.memory.generateEmbeddings(messages.at(-1)?.content ?? "")).embedding,
+  metadata: { agentId: agent.id }
 });
 
-// 4. Record Stats
-await client.stats.putStats({
-  eventName: "agentCreation",
-  promptTokens: 10,
-  completionTokens: 5
-});
-
-// 5. Retrieve and log all Agents
-const agents = await client.agent.listAgents();
-console.log("All Agents:", agents);
+// 5 · Stats
+await client.stats.putStats({ eventName: "chat", promptTokens: 15, completionTokens: 25 });
 ```
 
 ---
 
 ## Contributing
 
-We welcome **pull requests** and **issues** if you find bugs or want to suggest improvements. Please check the [GitHub repository](https://github.com/CatchTheTornado/open-agents-builder-client) for contribution guidelines and additional information.
+We welcome **pull requests** and **issues**! See the [GitHub repo](https://github.com/CatchTheTornado/open-agents-builder-client) for guidelines.
 
 ---
 
 ## License
 
-**MIT License** © [CatchTheTornado](https://www.catchthetornado.com/)
+**MIT License** © [CatchTheTornado](https://www.catchthetornado.com/)
 
-See the [LICENSE](https://github.com/CatchTheTornado/open-agents-builder-client/blob/main/LICENSE) file for details.
+See the [LICENSE](https://github.com/CatchTheTornado/open-agents-builder-client/blob/main/LICENSE) for details.

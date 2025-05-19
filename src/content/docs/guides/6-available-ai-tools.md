@@ -3,21 +3,7 @@ title: AI Tools Documentation
 description: Open Agents Builder available tools
 order: 20
 ---
-# AI Tools Documentation
-
 This document provides comprehensive documentation for all AI tools available in the project.
-
-## Table of Contents
-- [Current Date Tool](#current-date-tool)
-- [Send Email Tool](#send-email-tool)
-- [HTTP Tool](#http-tool)
-- [Memory Tools](#memory-tools)
-- [Calendar Tools](#calendar-tools)
-- [Product Tools](#product-tools)
-- [Attachment Tools](#attachment-tools)
-- [Code Execution Tool](#code-execution-tool)
-- [UI Components Tools](#ui-components-tools)
-- [Flow Execution Tool](#flow-execution-tool)
 
 ## Current Date Tool
 

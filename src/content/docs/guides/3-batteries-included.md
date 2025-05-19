@@ -6,7 +6,7 @@ order: 20
 
 Our goal was to make OAB ready for building PoCs (Proof of Concept) or production AI agents for businesses **in no time**.
 
-That’s why we decided to include a variety of typical business features right in the panel. You can start building your agent as soon as possible, and once it’s working, integrate your internal data structures—via API—into your chosen ERP, CRM, or PIM.
+That’s why we decided to include a variety of typical business features right in the panel. You can start building your agent as soon as possible, and once it’s working, integrate your internal data structures—via API—into your chosen ERP, CRM, or PIM. Check the [list of available AI tools](./6-available-ai-tools.md).
 
 A second principle guiding us is that **AI often lacks a suitable user interface**. While a chat interface might be useful for end users, it’s often insufficient for business stakeholders who need to work with numeric entities such as orders, or with more complex (though standard) data structures. It’s also convenient to have basic tooling—for example, an order system that calculates rather than guesses proper tax values.
 

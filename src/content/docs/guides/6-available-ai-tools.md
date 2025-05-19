@@ -16,6 +16,25 @@ Returns the current date in ISO format (GMT time).
 }
 ```
 
+_No parameters_
+
+## Day Name Tool
+
+Gets the weekday name for a given ISO date.
+
+```typescript
+{
+  displayName: 'Get the day name',
+  parameters: {
+    locale?: string, // Optional locale like 'en-US', 'pl-PL'
+    date: string     // ISO date (e.g. '2025-05-18T00:00:00Z')
+  }
+}
+```
+Parameters:
+- `locale` (string, optional): Locale such as `en-US`, `pl-PL` used to localise the weekday name. Defaults to system locale when omitted.
+- `date` (string, required): Date/time in ISO format for which the weekday name should be returned.
+
 ## Send Email Tool
 
 Sends emails using Resend.com API.
@@ -24,11 +43,20 @@ Sends emails using Resend.com API.
 {
   displayName: 'Send Email',
   parameters: {
-    apiKey: string, // Resend.com API key
-    url?: string    // Optional override of default Resend API endpoint
+    from: string,           // "From" address (e.g. 'Acme <noreply@acme.dev>')
+    to: string[],           // Array of recipient addresses
+    subject: string,        // Email subject
+    text: string,           // Plain-text body
+    html: string            // HTML body
   }
 }
 ```
+Parameters:
+- `from` (string, required): Email sender in the form `Name <address@example.com>`.
+- `to` (string[], required): List of recipient email addresses.
+- `subject` (string, required): Subject line.
+- `text` (string, required): Plain-text version of the email body.
+- `html` (string, required): HTML version of the email body.
 
 ## HTTP Tool
 
@@ -41,10 +69,15 @@ Makes HTTP requests to external services.
     url: string,
     method: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH',
     headers?: Record<string, string>,
-    body?: any
+    body: string
   }
 }
 ```
+Parameters:
+- `url` (string, required): Target URL.
+- `method` (enum, required): One of `GET`, `POST`, `PUT`, `DELETE`, `PATCH`.
+- `headers` (record, optional): Additional HTTP headers.
+- `body` (string, required): Request body. Pass an empty string for `GET` requests.
 
 ## Memory Tools
 
@@ -56,15 +89,22 @@ Saves documents to the vector store for later retrieval.
 {
   displayName: 'Save document to memory store',
   parameters: {
-    id?: string,           // Optional unique identifier
-    content: string,       // Document content
-    metadata: string,      // Additional metadata
-    storeName?: string,    // Optional store name (defaults to 'default')
-    shortTerm?: boolean,   // Whether to save as short-term memory
-    expirationPeriod?: number // Expiration period in hours for short-term memory
+    id?: string,
+    content: string,
+    metadata: string,
+    storeName?: string,
+    shortTerm?: boolean,
+    expirationPeriod?: number
   }
 }
 ```
+Parameters:
+- `id` (string, optional): Custom identifier. Auto-generated when omitted.
+- `content` (string, required): Raw document text to index.
+- `metadata` (string, required): JSON string with arbitrary metadata associated with the document.
+- `storeName` (string, optional): Name of the vector store. Defaults to `default`.
+- `shortTerm` (boolean, optional): Treat the entry as short-term memory bound to current session. Default `false`.
+- `expirationPeriod` (number, optional): Lifetime (in hours) when `shortTerm` is `true`.
 
 ### Memory Search Tool
 
@@ -74,12 +114,16 @@ Searches for documents in the memory store.
 {
   displayName: 'Search in memory store',
   parameters: {
-    query: string,         // Search query
-    storeName?: string,    // Optional store name (defaults to 'default')
-    limit?: number         // Maximum number of results (defaults to 5)
+    query: string,
+    storeName?: string,
+    limit?: number
   }
 }
 ```
+Parameters:
+- `query` (string, required): Full-text query.
+- `storeName` (string, optional): Store name. Defaults to `default`.
+- `limit` (number, optional): Maximum number of matches to return. Default `5`.
 
 ## Calendar Tools
 
@@ -89,12 +133,30 @@ Schedules calendar events.
 
 ```typescript
 {
-  displayName: 'Schedule events',
+  displayName: 'Schedule event in the calendar',
   parameters: {
-    // Calendar event parameters
+    id: string,
+    title: string,
+    description: string,
+    sessionId: string,
+    exclusive: string,
+    start: string,
+    location: string,
+    end: string,
+    participants: string
   }
 }
 ```
+Parameters:
+- `id` (string): Existing event ID to update or empty string to create a new event.
+- `title` (string): Title of the event.
+- `description` (string): Event description.
+- `sessionId` (string): Associated session identifier.
+- `exclusive` (string): `"true"` / `"false"` flag to mark the event as blocking other bookings.
+- `start` (string): ISO start date-time (must be in the future).
+- `location` (string): Physical or virtual location.
+- `end` (string): ISO end date-time.
+- `participants` (string): JSON-encoded array of `{ name, email }`.
 
 ### Calendar List Tool
 
@@ -104,10 +166,12 @@ Lists calendar events.
 {
   displayName: 'Access events calendar',
   parameters: {
-    // Calendar listing parameters
+    limitedVisibility?: boolean
   }
 }
 ```
+Parameters:
+- `limitedVisibility` (boolean, optional): When `true`, sensitive fields are anonymised in the returned events.
 
 ## Product Tools
 
@@ -143,13 +207,13 @@ Creates new orders.
 
 ### Attachment Content Tool
 
-Retrieves content of attachments.
+Retrieves content of an attachment and stores it inside the session workspace.
 
 ```typescript
 {
-  displayName: 'Attachment Content',
+  displayName: 'Get the attachment content',
   parameters: {
-    id?: string  // Optional filter by storageKey, filename or mimeType
+    id?: string  // Identifier (storageKey, filename, mimeType, etc.)
   }
 }
 ```
@@ -160,9 +224,12 @@ Lists available attachments.
 
 ```typescript
 {
-  displayName: 'List Attachments',
+  displayName: 'List attachments/files tool',
   parameters: {
-    // Attachment listing parameters
+    query?: string,     // Optional filter by storageKey, filename or mimeType
+    mimeTypes?: string, // Optional comma-separated list of mime types to filter
+    limit?: number,     // Number of attachments to return (default 10)
+    offset?: number     // Pagination offset (default 0)
   }
 }
 ```
@@ -175,7 +242,11 @@ Executes code in an isolated environment.
 {
   displayName: 'Execute code',
   parameters: {
-    // Code execution parameters
+    language: string, // Programming language (e.g. 'python', 'typescript')
+    code: string,     // Source code to execute
+    files?: Record<string, string>, // Optional additional files (filename → content)
+    stdin?: string,   // Optional STDIN input
+    timeout?: number  // Optional execution timeout in seconds
   }
 }
 ```
@@ -234,4 +305,4 @@ Features:
 - Tool execution tracking
 - Usage statistics
 - SaaS integration
-- Error handling and validation
+- Error handling and validation 

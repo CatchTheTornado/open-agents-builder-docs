@@ -15,7 +15,7 @@ Below is a **step‑by‑step** tutorial on how to use the **Chat endpoint** in 
 > | `streamChat(messages, opts)`      | Async generator that yields decoded stream parts (`text`, `tool_call`, `file`, …).                           |
 > | `collectMessages(messages, opts)` | Awaits the whole stream and returns the **assembled assistant message** + the `sessionId` for the next turn. |
 >
-> Full examples live in the **example repo** under [`/app/client-chat`](https://github.com/CatchTheTornado/open-agents-builder-example/tree/main/app/client-chat).
+> Full examples live in the **example repo** under [`/app/client-chat`](https://github.com/CatchTheTornado/open-agents-builder-example/).
 
 ---
 

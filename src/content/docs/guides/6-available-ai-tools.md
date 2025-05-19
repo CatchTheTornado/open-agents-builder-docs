@@ -1,3 +1,8 @@
+---
+title: AI Tools Documentation
+description: Open Agents Builder available tools
+order: 20
+---
 # AI Tools Documentation
 
 This document provides comprehensive documentation for all AI tools available in the project.

@@ -6,12 +6,12 @@ order: 30
 
 **Note**: For a complete example project using this client, see the [Open Agents Builder Example](https://github.com/CatchTheTornado/open-agents-builder-example).
 
-The **open‑agents‑builder‑client** is a TypeScript client for the [Open Agents Builder](https://www.openagentsbuilder.com/) APIs. It provides fully‑typed, modular access to every public endpoint—agents, keys, attachments, stats, audits, sessions, results, calendars, products, orders, **memory**, and **chat**. All request/response payloads are validated with **Zod**, so you get rock‑solid type‑safety and early runtime validation.
+The **open‑agents‑builder‑client** is a TypeScript client for the [Open Agents Builder](https://www.openagentsbuilder.com/) APIs. It provides fully‑typed, modular access to every public endpoint—agents, keys, attachments, stats, audits, sessions, results, calendars, products, orders, **memory**, **chat**, and **evals**. All request/response payloads are validated with **Zod**, so you get rock‑solid type‑safety and early runtime validation.
 
 ## Key Features
 
 * **Typed Data Transfer Objects (DTOs)** via Zod schemas
-* **Modular** approach: `client.agent`, `client.keys`, `client.attachment`, `client.memory`, `client.chat`, etc.
+* **Modular** approach: `client.agent`, `client.keys`, `client.attachment`, `client.memory`, `client.chat`, `client.evals`, etc.
 * **Automatic** request headers:
 
   * `Authorization: Bearer <API_KEY>`
@@ -30,8 +30,9 @@ The **open‑agents‑builder‑client** is a TypeScript client for the [Open Ag
   * `Orders` → `/api/order`
   * **Vector‑store Memory** → `/api/memory/*`
   * **Chat** → `/api/chat` (SSE streaming)
+  * **Evaluation** → `/api/eval/*`
 * **Configurable** base URL, database hash and API key
-* **Built‑in streaming helpers** for chat—yielding reasoning, tool calls, files, etc.
+* **Built‑in streaming helpers** for chat and evaluations—yielding reasoning, tool calls, files, etc.
 
 ---
 
@@ -84,6 +85,7 @@ Every top‑level resource is exposed as a property on the main client:
 | `client.order`      | `OrderApi`      | Orders (OMS)                   |
 | `client.memory`     | `MemoryApi`     | Vector‑store memory            |
 | `client.chat`       | `ChatApi`       | Streaming chat with Agents     |
+| `client.evals`      | `EvalApi`       | Evaluate agents & test cases   |
 
 Below you’ll find a quick reference for each module.
 
@@ -184,34 +186,134 @@ await client.audit.createAuditLog({
 
 ---
 
-### Session
+### Session  📑
 
-* **`listSessions`**
-* **`deleteSession`**
+Manage chat or flow sessions—useful for analytics or cleanup.
+
+* **`listSessions(params)`** – supports pagination & filtering by `agentId`, `dateRange`, etc.
+* **`deleteSession(sessionId)`** – hard‑deletes a session and cascades to its results & stats.
+
+```ts
+// List the 20 most recent sessions for a specific Agent
+const sessions = await client.session.listSessions({
+  agentId: agent.id!,
+  limit: 20,
+  offset: 0,
+  sort: "createdAt:desc"
+});
+
+// Wipe a test session after QA
+await client.session.deleteSession("SESSION_ID");
+```
 
 ---
 
-### Calendar
+### Calendar  📅
 
-* **`listEvents`**
-* **`upsertEvent`**
-* **`deleteEvent`**
+Create and query **iCal‑style events** so your Agent can schedule meetings or block time.
+
+* **`listEvents(params)`** – filter by `start`, `end`, `agentId`, `exclusive`, etc.
+* **`upsertEvent(event)`** – create or update (idempotent by `id`).
+* **`deleteEvent(eventId)`** – remove an event.
+
+```ts
+// Block 30 minutes for a product demo
+await client.calendar.upsertEvent({
+  id: crypto.randomUUID(),
+  title: "Demo call with Acme",
+  agentId: agent.id!,
+  start: "2025-06-02T10:00:00Z",
+  end: "2025-06-02T10:30:00Z",
+  location: "Zoom"
+});
+
+// Pull all events for June 2025
+const june = await client.calendar.listEvents({
+  agentId: agent.id!,
+  start: "2025-06-01",
+  end: "2025-06-30"
+});
+
+// Cancel an event
+await client.calendar.deleteEvent(june[0].id);
+```
 
 ---
 
-### Product
+### Product  🛍️
 
-* **`listProducts`**
-* **`upsertProduct`**
-* **`deleteProduct`**
+Store **catalog data**—prices, variants, attributes—ready for RAG or order processing.
+
+* **`listProducts(params)`** – full‑text search & pagination (`query`, `limit`, `offset`).
+* **`upsertProduct(product)`** – insert or patch by `sku` / `id`.
+* **`deleteProduct(productId)`** – logical delete.
+
+```ts
+// Upsert a simple product with two color variants
+await client.product.upsertProduct({
+  sku: "TSHIRT-BASE",
+  name: "Unisex Tee",
+  price: { value: 19.99, currency: "USD" },
+  variants: [
+    { sku: "TSHIRT-BASE-RED-M", name: "Red / M", price: { value: 19.99, currency: "USD" } },
+    { sku: "TSHIRT-BASE-RED-L", name: "Red / L", price: { value: 19.99, currency: "USD" } }
+  ],
+  images: [
+    { url: "https://cdn.example.com/img/tee-red.png", alt: "Front view" }
+  ],
+  tags: ["tshirt","summer"]
+});
+
+// Quick catalog search
+const tees = await client.product.listProducts({ query: "tshirt", limit: 10 });
+
+// Retire a SKU
+await client.product.deleteProduct("TSHIRT-BASE");
+```
 
 ---
 
-### Order
+### Order  📦
 
-* **`listOrders`**
-* **`upsertOrder`**
-* **`deleteOrder`**
+End‑to‑end **OMS** primitives—quotes, carts, fulfilment, status tracking.
+
+* **`listOrders(params)`** – filter by `status`, `date`, `email`, etc.
+* **`upsertOrder(order)`** – create or update (by `id`).
+* **`deleteOrder(orderId)`** – remove an order.
+
+```ts
+// ➊ Create a new order from a cart
+const order = await client.order.upsertOrder({
+  status: "new",
+  email: "jane@example.com",
+  items: [{
+    id: crypto.randomUUID(),
+    productSku: "TSHIRT-BASE",
+    variantSku: "TSHIRT-BASE-RED-M",
+    price: { value: 19.99, currency: "USD" },
+    quantity: 2
+  }],
+  shippingPrice: { value: 5, currency: "USD" },
+  total: { value: 44.98, currency: "USD" }
+});
+
+// ➋ Transition to "shipped"
+await client.order.upsertOrder({
+  id: order.id!,
+  status: "shipped",
+  statusChanges: [
+    ...(order.statusChanges ?? []),
+    { date: new Date().toISOString(), message: "Label created", newStatus: "shipped" }
+  ]
+});
+
+// ➌ List all completed orders this week
+const fulfilled = await client.order.listOrders({
+  status: "completed",
+  from: "2025-05-26",
+  to: "2025-06-02"
+});
+```
 
 ---
 
@@ -304,6 +406,80 @@ await client.chat.collectMessages([
 
 ---
 
+### Evaluation Framework  🧪
+
+The client ships a **comprehensive evaluation framework** that lets you *generate*, *run* and *iterate* test cases against any Agent. This is invaluable for regression testing, prompt‑engineering experiments and continuous performance tracking.
+
+| Method                                                | Description                                                                                           |
+| ----------------------------------------------------- | ----------------------------------------------------------------------------------------------------- |
+| `generateTestCases(agentId, prompt)`                  | Produce a curated set of diverse test cases derived from the Agent’s system prompt.                   |
+| `runTestCases(agentId, testCases)`                    | Execute the test suite and **stream** incremental updates (`test_case_update`) as each case finishes. |
+| `adjustTestCase(agentId, testCaseId, actualResponse)` | Update an existing case when real‑world behaviour diverges from expectations.                         |
+
+#### Generate Test Cases
+
+```ts
+const { testCases } = await client.evals.generateTestCases(
+  "AGENT_ID",
+  "You are a helpful assistant that can answer questions about various topics."
+);
+console.log("Generated test cases:", testCases);
+```
+
+#### Run Test Cases (streaming)
+
+```ts
+const stream = await client.evals.runTestCases("AGENT_ID", testCases);
+const reader = stream.getReader();
+const decoder = new TextDecoder();
+
+while (true) {
+  const { value, done } = await reader.read();
+  if (done) break;
+
+  // SSE chunks are JSONL
+  const chunk = decoder.decode(value);
+  const lines = chunk.split('\n').filter(line => line.trim());
+
+  for (const line of lines) {
+    const update = JSON.parse(line);
+    if (update.type === "test_case_update") {
+      const testCase = update.data;
+      console.log(`Test case ${testCase.id}: ${testCase.status}`);
+      if (testCase.evaluation) {
+        console.log(`  Score:        ${testCase.evaluation.score}`);
+        console.log(`  Explanation:  ${testCase.evaluation.explanation}`);
+      }
+    }
+  }
+}
+```
+
+#### Adjust Test Cases
+
+If a test fails—or you want to incorporate the real answer returned by the Agent—call `adjustTestCase`:
+
+```ts
+const adjusted = await client.evals.adjustTestCase(
+  "AGENT_ID",
+  "TEST_CASE_ID",
+  "This is the actual result we got"
+);
+console.log("Adjusted test case:", adjusted.testCase);
+```
+
+#### What You Get
+
+* **Automatic test‑case synthesis** tuned to the Agent’s scope & instructions
+* **Real‑time feedback loop** via SSE (`test_case_update` events)
+* **Granular scores & rationales** (pass/fail or 0‑100) to quantify quality
+* **Seamless RAG & tool‑call support** for complex, multi‑step flows
+* **One‑line adjustments** keep your ground‑truth constantly in sync
+
+> **TIP** Integrate the evaluation run into your CI pipeline for bullet‑proof guardrails before shipping prompt changes.
+
+---
+
 ## Extending the Client
 
 * **Multipart uploads** – For very large binaries you may extend `AttachmentApi` to use `multipart/form-data` instead of base64.
@@ -343,6 +519,10 @@ await client.memory.createRecord("conversations", {
 
 // 5 · Stats
 await client.stats.putStats({ eventName: "chat", promptTokens: 15, completionTokens: 25 });
+
+// 6 · Evaluate the Agent after an update
+const { testCases } = await client.evals.generateTestCases(agent.id!, agent.prompt);
+await client.evals.runTestCases(agent.id!, testCases); // stream & assert in CI
 ```
 
 ---

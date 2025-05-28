@@ -128,7 +128,7 @@ There's one more usefull tool you might want to use which is "Adjust test case" 
 
 ---
 
-## 11. Best Practices Checklist  \:ballot\_box\_with\_check:
+## 11. Best Practices Checklist 
 
 * [ ] **Green bar rule** – merge / deploy only when every eval passes.
 * [ ] **Cover edge cases** – cancellations, overlapping appointments, invalid input.

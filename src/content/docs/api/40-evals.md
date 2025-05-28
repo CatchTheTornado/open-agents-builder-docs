@@ -38,36 +38,113 @@ Content-Type: application/json
 
 ---
 
-## 3. Data Models & Validation
+## 3. Data Models & Validation Rules (Exact Schema)
 
-| Name                                          | Shape    | Notes |
-| --------------------------------------------- | -------- | ----- |
-| **Test Case**                                 | \`\`\`ts |       |
-| {                                             |          |       |
-| id:          string;             // unique    |          |       |
-| messages:    {                   // ≥ 2 items |          |       |
+Below are the *canonical* TypeScript-style definitions, reconstructed **directly from the Zod validators in the source code**.
 
-```
-role: 'user' | 'assistant';
-content: string;
-toolCalls?: {
-  name: string;
-  arguments: Record<string, unknown>;
-}[];
+### 3.1 Tool Call (inside a test-case request)
+
+```ts
+export interface ToolCallRequest {
+  name: string;                           // tool identifier, e.g. "checkAvailability"
+  arguments: Record<string, unknown>;     // JSON-serialisable args
+}
 ```
 
-}\[];
-expectedResult: string;          // human-readable assertion
+### 3.2 Chat Message
+
+```ts
+export interface ChatMessage {
+  role: 'user' | 'assistant';
+  content: string;
+  /** present **only** in assistant messages that simulate tool usage */
+  toolCalls?: ToolCallRequest[];
 }
-``| Defined in `testCaseSchema` | | **Generate Response** |``ts { testCases: TestCase\[] }``| | **Run Stream Events** | ND-JSON, one object per line. `type` can be:<br>- `test_case_update`  <br>- `test_case_error`  <br>- `error` | | **Evaluation Object** |``ts
-{
-isCompliant: boolean;
-explanation: string;
-score: number;    // 0 → 1
+```
+
+> **Validation notes**
+>
+> * `role` must be exactly `"user"` or `"assistant"`.
+> * `content` cannot be empty.
+> * `toolCalls` is **optional** and, when provided, must be a **non-empty array** of valid `ToolCallRequest`s.
+
+### 3.3 Test Case (`/evals/generate` & `/evals/run` payload)
+
+```ts
+export interface TestCase {
+  id: string;                  // unique across the suite (client generates or taken from /generate)
+  messages: ChatMessage[];     // ≥ 2 items (at least 1 user + 1 assistant)
+  expectedResult: string;      // natural-language assertion to grade against
 }
-\`\`\` | Sent inside `evaluation` during **Run** / **Adjust** |
+```
+
+Zod reference (`testCaseSchema`):
+
+```ts
+z.object({
+  id: z.string(),
+  messages: z.array(
+    z.object({
+      role: z.enum(['user', 'assistant']),
+      content: z.string(),
+      toolCalls: z.array(
+        z.object({
+          name: z.string(),
+          arguments: z.record(z.unknown())
+        })
+      ).optional()
+    })
+  ),
+  expectedResult: z.string()
+})
+```
+
+### 3.4 Evaluation Object (returned by `/evals/run` & `/evals/adjust`)
+
+```ts
+export interface EvaluationResult {
+  isCompliant: boolean;   // true ⇢ meets or exceeds expectations
+  explanation: string;    // concise reasoning produced by the LLM rubric
+  score: number;          // 0.0 → 1.0
+}
+```
+
+Zod reference (`evaluationSchema`):
+
+```ts
+z.object({
+  isCompliant: z.boolean(),
+  explanation: z.string(),
+  score: z.number().min(0).max(1)
+})
+```
+
+### 3.5 Conversation Flow (object streamed back during `/evals/run`)
+
+```ts
+export interface ToolCallRuntime {
+  toolCallId: string;
+  toolName: string;
+  args: Record<string, unknown>;
+  result: unknown;
+}
+
+export interface ConversationFlow {
+  messages: (ChatMessage & {        // same structure as request messages
+    /** runtime-filled tool call results */
+    toolCalls?: ToolCallRuntime[];
+  })[];
+  /** flattened list of tool calls for quick inspection */
+  toolCalls?: ToolCallRuntime[];
+}
+```
 
 ---
+
+These models are **strictly enforced** at runtime via Zod; any payload that deviates will trigger a `400 Bad Request` (during adjustment/generation) or a `500 Internal Server Error` (during run).
+
+
+
 
 ## 4. Endpoints & Usage
 

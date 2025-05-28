@@ -91,7 +91,7 @@ Below you’ll find a quick reference for each module.
 
 ---
 
-### Agent
+### Agent 🤖
 
 * **`listAgents`** – fetch all agents
 * **`upsertAgent`** – create or update an agent
@@ -113,7 +113,7 @@ await client.agent.deleteAgent("AGENT_ID");
 
 ---
 
-### Keys
+### Keys 🔑
 
 * **`listKeys`**
 * **`upsertKey`**
@@ -128,7 +128,7 @@ await client.keys.deleteKey("KEY_LOCATOR_HASH");
 
 ---
 
-### Attachments
+### Attachments 📎
 
 * **`listAttachments`**
 * **`queryAttachments`** (server‑side filtering/querying)
@@ -147,7 +147,7 @@ await client.attachment.upsertAttachment({
 
 ---
 
-### Stats
+### Stats 📊
 
 * **`putStats`** – record usage
 * **`getAggregatedStats`** – monthly / daily token usage, cost & request counts
@@ -165,7 +165,7 @@ console.log("Today’s usage:", data.today);
 
 ---
 
-### Audit
+### Audit 🕵️
 
 * **`listAudit`**
 * **`createAuditLog`**
@@ -179,10 +179,23 @@ await client.audit.createAuditLog({
 
 ---
 
-### Result
+### Result 🗂️
 
-* **`listResults`**
-* **`deleteResult`**
+Persist assistant outputs or any artefacts generated during a session—perfect for auditing, hand‑off, or building analytics dashboards.
+
+* **`listResults(params)`** – retrieve results, filterable by `sessionId`, `agentId`, `dateRange`, etc.
+* **`deleteResult(sessionId)`** – purge all records linked to a session (irreversible).
+
+```ts
+// Fetch all assistant replies produced in a session
+const logs = await client.result.listResults({ sessionId: "SESSION_ID" });
+
+// Inspect the most recent answer
+console.log("Assistant replied:", logs.at(-1)?.content);
+
+// Remove the results once exported to your data‑lake
+await client.result.deleteResult("SESSION_ID");
+```
 
 ---
 
@@ -524,17 +537,3 @@ await client.stats.putStats({ eventName: "chat", promptTokens: 15, completionTok
 const { testCases } = await client.evals.generateTestCases(agent.id!, agent.prompt);
 await client.evals.runTestCases(agent.id!, testCases); // stream & assert in CI
 ```
-
----
-
-## Contributing
-
-We welcome **pull requests** and **issues**! See the [GitHub repo](https://github.com/CatchTheTornado/open-agents-builder-client) for guidelines.
-
----
-
-## License
-
-**MIT License** © [CatchTheTornado](https://www.catchthetornado.com/)
-
-See the [LICENSE](https://github.com/CatchTheTornado/open-agents-builder-client/blob/main/LICENSE) for details.

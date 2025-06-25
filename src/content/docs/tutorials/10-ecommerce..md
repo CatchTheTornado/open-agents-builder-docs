@@ -102,8 +102,8 @@ In this tutorial, I walk you through the process of creating an e-commerce agent
 
 ### 7. Share or Embed Your Agent
 * **Public chat URL** (found under **Preview**) – paste in Instagram bio, Stories “link sticker”, Facebook, WhatsApp, email campaigns…
-* **iFrame script** – copy from **API and widgets** to [embed on any webpage](/guides/5-integrating-with-the-website.md).
-* **Zapier / Make / Webhooks** – automate notifying fulfillment centers, CRMs, sheets, you name it. Read on [how to integrate external tools](/guides/5-integrating-with-the-website.md).
+* **iFrame script** – copy from **API and widgets** to [embed on any webpage](/guides/5-integrating-with-the-website).
+* **Zapier / Make / Webhooks** – automate notifying fulfillment centers, CRMs, sheets, you name it. Read on [how to integrate external tools](/guides/5-integrating-with-the-website).
 
 
 
